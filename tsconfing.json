@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "es5",  // You can switch to es6 if you prefer
+    "jsx": "react-jsx",  // React 17's JSX Transform
+    "moduleResolution": "node",  // Resolve modules like node.js
+    "strict": true,  // Enables strict mode for better type checking
+    "esModuleInterop": true,  // Enables compatibility with CommonJS modules
+    "skipLibCheck": true,  // Skips type checking of declaration files for faster builds
+    "outDir": "./dist"  // Specify output folder for compiled JS files
+  },
+  "include": [
+    "src/**/*.tsx",  // Include all .tsx files
+    "src/**/*.ts"    // Include all .ts files
+  ],
+  "exclude": [
+    "node_modules"  // Exclude node_modules from compilation
+  ]
+}
+
+  

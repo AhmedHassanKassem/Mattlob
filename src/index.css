@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import 'react-toastify/dist/ReactToastify.css';
+/* @import 'react-datepicker/dist/react-datepicker.css'; */
+@import 'animate.css';
+
+/* globals.css */
+
+
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #ffffff;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  color: #000000;
+  font-family: 'Poppins', sans-serif;
+}
+input::placeholder {
+  font-size: 12px;
+}
+
+
+#option {
+  font-size: 14px;
+  font-weight: 600;
+   color: #000000;
+   background-color: #fff;
+ 
+}
+#options {
+  font-size: 13px;
+  font-weight: 600;
+   color: #0369a1;
+ 
+}
+#options:focus {
+  box-shadow: 0 0 15px 5px rgba(3, 105, 161, 0.3);
+  border: 1px solid #0369a1;
+  outline: none;
+}
+
+textarea::placeholder {
+  font-size: 15px;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
