@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 interface tableProps {
   id?: string | number;
 
 }
-const Table: React.FC<tableProps> = ({ id  }) => {
+const Table: React.FC<tableProps> = () => {
  
 
   return (

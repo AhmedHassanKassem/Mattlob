@@ -1,5 +1,6 @@
-'use client'
-import React from "react";
+import { forwardRef } from "react";
+
+
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement>{
   type?: string;
@@ -18,7 +19,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement>{
 
 }
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(
+const Input = forwardRef<HTMLInputElement, InputProps>(
   (
     {
       type,
@@ -33,7 +34,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       name,
       value,
       onChange,
-      onClick,
     },
     ref
   ) => {

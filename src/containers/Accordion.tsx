@@ -1,5 +1,5 @@
 
-import React, { CSSProperties, FC } from "react";
+import  {  CSSProperties, FC } from "react";
 import {useEffect, useState , ReactNode} from "react";
 
 interface Accordion {
@@ -41,7 +41,6 @@ const Accordion: FC<Accordion> = ({
   hideElement,
   titleClassName,
   accordionBodyClassName,
-  btnType,
   style,
   titleStyle,
   isSplitted = false,

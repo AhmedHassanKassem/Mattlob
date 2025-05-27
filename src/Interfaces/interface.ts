@@ -5,6 +5,10 @@ export interface ICVAttach {
   LastModifiedDate: string;
   FileAsBase64: string;
 }
+export interface ICandidateLogin {
+  account_email: string;
+  account_password: string;
+}
 export interface IPreviousDesignation {
   id_previous?:number
   previous_designation?: string;

@@ -1,7 +1,7 @@
-'use client'
 
-import React from "react";
-import { CSSProperties, FC, forwardRef } from "react";
+
+
+import { CSSProperties,  forwardRef } from "react";
 
 interface CheckboxProps {
   value?: string;
@@ -22,7 +22,6 @@ const CheckBoxInput= forwardRef<HTMLInputElement, CheckboxProps>(({
   value,
   className,
   checked=false,
-  hideElement,
   checkBoxContent,
   onChange,
   name,
@@ -30,8 +29,7 @@ const CheckBoxInput= forwardRef<HTMLInputElement, CheckboxProps>(({
   label2,
   labelClassName,
   style,
-  isLast = false
-}, ref) => {
+}) => {
   return (
     <>
   <div className={className ||"flex items-center lg:justify-evenly justify-center" }>

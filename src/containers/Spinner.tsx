@@ -1,4 +1,4 @@
-'use client'
+
 
 import React from "react"
 
@@ -16,8 +16,6 @@ const Spinner: React.FC<getSpinner> = ({
     ariaHidden,
     className,
     spinnerClass,
-    animation,
-    speed
 })=>{
 
     return (

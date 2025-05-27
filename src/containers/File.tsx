@@ -1,5 +1,5 @@
-"use client";
-import React from "react";
+;
+
 
 interface InputProps {
   type?: string;
@@ -28,7 +28,6 @@ const File: React.FC<InputProps> = ({
   labelClass,
   buttonName,
   buttonNameClass,
-  iconClass,
   disabled = false,
   required = true,
   selectedFileName,

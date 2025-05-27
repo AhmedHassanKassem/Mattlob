@@ -1,28 +1,25 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import  { type ChangeEvent, useEffect, useState } from "react";
 import Input from "../../containers/Input.tsx";
 import File from "../../containers/File.tsx";
 import Select from "../../containers/Select.tsx";
 import CheckBoxInput from "../../containers/Checkbox.tsx";
 import Button from "../../containers/Button.tsx";
 // import * as pdfjsLib from "pdfjs-dist";
-import { Document, Page, pdfjs } from "react-pdf";
-import { set, useForm } from "react-hook-form";
+import {  pdfjs } from "react-pdf";
+import {  useForm } from "react-hook-form";
 
 import { axiosInst } from "../../axios/axios.ts";
 import { toast } from "react-toastify";
 
 import {
-  ArrowRight,
   Briefcase,
   Building2,
   Calendar,
-  CheckCircle,
-  Mail,
   Pencil,
   Trash2,
 } from "lucide-react";
 import SuccessMessage from "../../containers/SuccessMessage.tsx";
-import {
+import type {
   ICandidate,
   ICountry,
   ICVAttach,
@@ -30,7 +27,8 @@ import {
   IGrade,
   INotifyPeriod,
   IPreviousDesignation,
-} from "../../Interfaces/interface.ts";
+} from "../../Interfaces/interface";
+import { Link } from "react-router-dom";
 const Register = () => {
   pdfjs.GlobalWorkerOptions.workerSrc = "http://mattlob1-001-site1.jtempurl.com/static/pdf.worker.mjs";
   const [phoneNumber, setPhoneNumber] = useState("+20");
@@ -46,14 +44,13 @@ const Register = () => {
   const workMonth = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   const years = Array.from({ length: 50 }, (_, i) => i + 1);
   const workYears = Array.from({ length: 2025 - 1990 + 1 }, (_, i) => 1990 + i);
-  const [fromDate, setFromDate] = useState<string>("");
-  const [toDate, setToDate] = useState<string>("");
+  const [fromDate] = useState<string>("");
+  const [toDate] = useState<string>("");
   const [prevIndex, setPrevIndex] = useState<number>(0);
   const [extractedText, setExtractedText] = useState<string>("");
-  const [errorMessage, setErrorMessage] = useState<string>("");
   const [skills, setSkills] = useState<string[]>([]); // For extracted skills
   const [selectedFileName, setSelectedFileName] = useState<string>("");
-  const [cvAttach, setCvAttach] = useState<ICVAttach>();
+  const [cvAttach] = useState<ICVAttach>();
   const [previousEmp , setPreviousEmp] = useState<IPreviousDesignation[]>([]);
   const [prevDesForm, setPrevDesForm] = useState<IPreviousDesignation[]>([
     {
@@ -97,7 +94,7 @@ const Register = () => {
     Grade_ID: 0,
     previousEmploymentData: previousEmp,
   });
-  const [prevErrors, setPrevErrors] = useState<Record<string, string>>({});
+  const [prevErrors] = useState<Record<string, string>>({});
 
   const {
     register,
@@ -218,29 +215,29 @@ const Register = () => {
   };
   
   
-  const validatePreviousForm = (index: number) => {
-    const newErrors: Record<string, string> = {};
-    const form = prevDesForm[index];
+  // const validatePreviousForm = (index: number) => {
+  //   const newErrors: Record<string, string> = {};
+  //   const form = prevDesForm[index];
   
-    // Validate each field
-    if (!form.previous_designation) {
-      newErrors[`previous_designation_${index}`] = "Previous Designation is required.";
-    }
-    if (!form.previous_company) {
-      newErrors[`previous_company_${index}`] = "Previous Company is required.";
-    }
-    if (!form.from_year || !form.from_month) {
-      newErrors[`from_date_${index}`] = "From date is required.";
-    }
-    if (form.from_year! > form.to_year!) {
-      newErrors[`date_range_${index}`] = "From year cannot be greater than To year.";
-    }
+  //   // Validate each field
+  //   if (!form.previous_designation) {
+  //     newErrors[`previous_designation_${index}`] = "Previous Designation is required.";
+  //   }
+  //   if (!form.previous_company) {
+  //     newErrors[`previous_company_${index}`] = "Previous Company is required.";
+  //   }
+  //   if (!form.from_year || !form.from_month) {
+  //     newErrors[`from_date_${index}`] = "From date is required.";
+  //   }
+  //   if (form.from_year! > form.to_year!) {
+  //     newErrors[`date_range_${index}`] = "From year cannot be greater than To year.";
+  //   }
   
-    setPrevErrors((prevErrors) => ({ ...prevErrors, ...newErrors }));
+  //   setPrevErrors((prevErrors) => ({ ...prevErrors, ...newErrors }));
   
-    // If no errors, return true, else false
-    return Object.keys(newErrors).length === 0;
-  };
+  //   // If no errors, return true, else false
+  //   return Object.keys(newErrors).length === 0;
+  // };
 
 
   
@@ -460,9 +457,9 @@ const Register = () => {
     );
   };
 
-  const handleChangePhone = (e: ChangeEvent<HTMLInputElement>) => {
-    setPhoneNumber(e.target.value);
-  };
+  // const handleChangePhone = (e: ChangeEvent<HTMLInputElement>) => {
+  //   setPhoneNumber(e.target.value);
+  // };
 
   const goToNext = async (e?: ChangeEvent<HTMLFormElement>, tabs?: string) => {
     e?.preventDefault(); // Properly call the method
@@ -482,13 +479,13 @@ const Register = () => {
     }
   };
 
-  const test = (data: ICandidate) => {
-    console.log("Form submitted successfully:", data);
-  };
+  // const test = (data: ICandidate) => {
+  //   console.log("Form submitted successfully:", data);
+  // };
 
-  const handleInvalid = () => {
-    console.log("Validation errors:", errors);
-  };
+  // const handleInvalid = () => {
+  //   console.log("Validation errors:", errors);
+  // };
   const getEduTypes = async () => {
     const res = await axiosInst.get(`/api/EducationType/GetEducationTypes`);
     if (res) {
@@ -519,9 +516,9 @@ const Register = () => {
     getCountries();
     getGrades();
   }, [skills]);
-  const addPrevDes = () => {
-    setPrevDes(!prevDes);
-  };
+  // const addPrevDes = () => {
+  //   setPrevDes(!prevDes);
+  // };
   return (
     <>
       {success && (
@@ -598,9 +595,10 @@ const Register = () => {
                 Already have an Account ?
               </p>
               <div className="flex items-center pr-1">
-                <p className="text-base text-sky-700 font-bold underline decoration-solid">
-                  Sign in
-                </p>
+                <Link to={'/login'} className="text-base text-sky-700 font-bold underline decoration-solid">Sign in</Link>
+                
+
+                
                 <p className="text-base text-[#575555] font-bold px-1">or</p>
                 <p className="text-base text-sky-700 font-bold underline decoration-solid">
                   Search Jobs

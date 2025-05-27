@@ -1,5 +1,5 @@
 
-import React from "react";
+import { Link } from "react-router-dom";
 
 const BottomBar = () => {
   return (
@@ -11,28 +11,28 @@ const BottomBar = () => {
  z-10 left-0 right-0  text-white shadow-lg">
         <div className="flex justify-around p-4">
           <Link
-            href="/home"
+            to="/home"
             className="flex flex-col items-center text-gray-400 hover:text-white"
           >
             <i className="fa fa-home text-xl text-white"></i>
             <span className="text-xs text-white font-normal mt-1">Home</span>
           </Link>
           <Link
-            href="/mylearning"
+            to="/mylearning"
             className="flex flex-col items-center text-gray-400 hover:text-white"
           >
             <i className="fas fa-circle-play text-xl text-white "></i>
             <span className="text-xs text-white font-normal mt-1">My learning</span>
           </Link>
           <Link
-            href="/home"
+            to="/home"
             className="flex flex-col items-center text-gray-400 hover:text-white"
           >
             <i className="fa fa-graduation-cap text-xl text-white "></i>
             <span className="text-xs text-white font-normal mt-1">Teachers</span>
           </Link>
           <Link
-            href="/login"
+            to="/login"
             className="flex flex-col items-center text-gray-400 hover:text-white"
           >
             <i className="fa fa-user text-xl text-white"></i>

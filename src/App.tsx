@@ -1,10 +1,10 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Register from './Components/Register/Register.tsx';
+import Login from './Login/Login.tsx';
 
 const App = () => {
   return (
-    <div className="App">
+    <div className="">
       <header className="App-header">
       <link
             rel="stylesheet"
@@ -13,11 +13,14 @@ const App = () => {
             crossOrigin="anonymous"
             referrerPolicy="no-referrer"
           />
-        <Router>
+      <main className='min-h-screen'>
+      <Router>
           <Routes>
             <Route path="/" element={<Register />} />
+            <Route path="/login" element={<Login />} />
           </Routes>
         </Router>
+      </main>
       </header>
     </div>
   );

@@ -1,5 +1,5 @@
 import { CheckCircle } from "lucide-react";
-import React, { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 interface messageProps{
     visibled? : boolean
     userName? : string

@@ -1,5 +1,5 @@
-'use client'
-import React from "react";
+
+
 import { CSSProperties } from "react";
 
 interface ButtonProps {
@@ -30,15 +30,12 @@ const Button: React.FC<ButtonProps> = ({
   imgSrc,
   imgAlt1,
   imgSrc1,
-  iconStyle,
   buttonContent,
   titleClassname,
   titleClassname1,
   title,
   title1,
-  href,
   onClick,
-  onClick1,
   btnType,
 }) => {
   return (
@@ -46,7 +43,7 @@ const Button: React.FC<ButtonProps> = ({
       style={style}
       type={`${typeof btnType != "undefined" && btnType.length > 0 ? "submit" : "button"}`}
       onClick={onClick}
-      className={`btn-default
+      className={`btn-default cursor-pointer
         ${typeof className != "undefined" && className.length > 0 ? className : ""}`}
     >
       {/* {typeof iconClass != "undefined" && iconClass.length > 0 ? ( */}

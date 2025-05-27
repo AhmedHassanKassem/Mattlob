@@ -1,4 +1,4 @@
-'use client'
+
 
 import React, { ReactNode, forwardRef } from 'react';
 
@@ -25,14 +25,12 @@ interface SelectProps {
 const Select = forwardRef<HTMLSelectElement, SelectProps>(({
   className,
   labelClassname,
-  forSelectClassName,
   value,
   name,
   oneValue,
   value1,
   value2,
   value3,
-  id,
   disabled = false,
   errorMessage,
   label,
