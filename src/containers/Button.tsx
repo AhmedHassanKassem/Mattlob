@@ -11,6 +11,7 @@ interface ButtonProps {
   href?: string;
   style? : CSSProperties,
   iconStyle?: string;
+  btnContentClassname?: string;
   titleClassname?: string;
   titleClassname1?: string;
   buttonContent? : string | React.ReactNode
@@ -31,6 +32,7 @@ const Button: React.FC<ButtonProps> = ({
   imgAlt1,
   imgSrc1,
   buttonContent,
+  btnContentClassname,
   titleClassname,
   titleClassname1,
   title,
@@ -63,7 +65,7 @@ const Button: React.FC<ButtonProps> = ({
       <span className={titleClassname1}>{title1}</span>
       </span><i className={iconClass || ""}></i>
       <span className={titleClassname}>{title}</span>
-      <span className="flex justify-center">
+      <span className={btnContentClassname || "flex justify-center"}>
       {buttonContent}
       <img src={imgSrc} alt={imgAlt} />
       <img src={imgSrc1} alt={imgAlt1} />
