@@ -2,7 +2,7 @@
 const BuildResume = () => {
   return (
     <div>
-      
+
     </div>
   )
 }

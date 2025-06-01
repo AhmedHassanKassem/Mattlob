@@ -39,48 +39,42 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(({
   onChange,
 }, ref) => {
   return (
-    <div className="lg:px-0 px-3">
+ <div className="lg:px-0 px-3">
+  <div>
+    <div className="min-h-[1.50rem] mb-1">
       {label && (
-        <label
-          htmlFor={forSelectLabel}
-          className={labelClassname || 'block lg:px-0 px-1 text-sm font-bold'}
-        >
+        <label htmlFor={forSelectLabel} className={labelClassname}>
           {label}
         </label>
       )}
-      <select
-      disabled={disabled}
-        name={name}
-        value={value}
-        onChange={onChange}
-        // id={"options"}
-        className={className || 'option bg-gray-50 border border-gray-900 text-gray-200 text-xs rounded-lg  block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400'}
-        ref={ref}
-      >
-<option 
-  value="" 
-  id='option'
-  className=" text-sm" 
->
-  {forSelect || "choose"}
-</option>
-
-        {oneValue || (
-          <>
-            {value1 && <option value={value1}>{value1}</option>}
-            {value2 && <option value={value2}>{value2}</option>}
-            {value3 && <option value={value3}>{value3}</option>}
-          </>
-        )}
-      </select>
-      <p
-        className={`text-red-500 text-sm transition-opacity duration-700 mt-1 ease-in-out ${
-          errorMessage ? 'opacity-100' : 'opacity-0'
-        }`}
-      >
-        {errorMessage}
-      </p>
     </div>
+
+    <select
+      disabled={disabled}
+      name={name}
+      value={value}
+      onChange={onChange}
+      className={className || '...default classes...'}
+      ref={ref}
+    >
+      <option value="" id="option" className="text-sm">
+        {forSelect || "choose"}
+      </option>
+      {oneValue || (
+        <>
+          {value1 && <option value={value1}>{value1}</option>}
+          {value2 && <option value={value2}>{value2}</option>}
+          {value3 && <option value={value3}>{value3}</option>}
+        </>
+      )}
+    </select>
+
+    <p className={`text-red-500 text-sm mt-1 ${errorMessage ? 'opacity-100' : 'opacity-0'}`}>
+      {errorMessage}
+    </p>
+  </div>
+</div>
+
   );
 });
 Select.displayName = 'Select';

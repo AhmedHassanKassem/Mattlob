@@ -15,6 +15,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement>{
   name?: string;
   className?: string;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void; 
+  onKeyPressEnter?: (event: React.KeyboardEvent<HTMLInputElement>) => void; 
   onClick?: (event: React.MouseEvent<HTMLInputElement, MouseEvent>) => void; // Changed to MouseEvent
 
 }
@@ -29,6 +30,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       labelClass,
       iconClass,
       placeholderType,
+      onKeyPressEnter,
       className,
       errorMessage,
       name,
@@ -58,6 +60,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       type={typeof type !== "undefined" ? type : ""}
       className={className || "text-black hidden"}
       placeholder={placeholderType || ""}
+      onKeyDown={onKeyPressEnter}
       onChange={handleChange} />
 <p
         className={`text-red-500 text-sm transition-opacity duration-700 mt-1 ease-in-out ${

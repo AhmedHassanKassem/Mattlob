@@ -16,6 +16,7 @@ interface ButtonProps {
   titleClassname1?: string;
   buttonContent? : string | React.ReactNode
   iconClass?: any;
+  disabled?: boolean;
   title?: string;
   title1?: string | number;
   onClick?: (e : any) => void;
@@ -35,6 +36,7 @@ const Button: React.FC<ButtonProps> = ({
   btnContentClassname,
   titleClassname,
   titleClassname1,
+  disabled,
   title,
   title1,
   onClick,
@@ -42,6 +44,7 @@ const Button: React.FC<ButtonProps> = ({
 }) => {
   return (
     <button
+    disabled={disabled}
       style={style}
       type={`${typeof btnType != "undefined" && btnType.length > 0 ? "submit" : "button"}`}
       onClick={onClick}

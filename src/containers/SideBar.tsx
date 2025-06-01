@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { CheckCircle2, FileText, User, GraduationCap, Award, FileCheck, Settings, Check } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { FileText, User, GraduationCap, Award, FileCheck, Settings, Check } from 'lucide-react';
 
 interface Step {
   id: number;
@@ -18,6 +18,22 @@ const SideBar: React.FC<SidebarProps> = ({
   completionPercentage = 20 
 }) => {
   const [activeStep, setActiveStep] = useState(currentStep);
+useEffect(() => {
+  const path = window.location.pathname;
+
+  const stepMap: Record<string, number> = {
+    '/build-resume/fill-data': 1,
+    '/build-resume/work-history': 2,
+    '/build-resume/add-educ': 3,
+    '/build-resume/add-skills': 4,
+    '/build-resume/add-summary': 5,
+    '/build-resume/finalize': 6,
+  };
+
+  const currentStep = stepMap[path] || 1;
+  setActiveStep(currentStep);
+}, []);
+
 
   const steps: Step[] = [
     {
@@ -63,76 +79,68 @@ const SideBar: React.FC<SidebarProps> = ({
   };
 
   return (
-    <div className="w-72 h-screen bg-white shadow-md border-r border-gray-200 flex flex-col">
+    <div className="w-60 h-screen bg-white shadow-md border-r border-gray-200 flex flex-col text-sm">
       {/* Header */}
-      <div className="p-6 border-b border-gray-100">
+      <div className="p-3 border-b border-gray-100">
         <div className="flex justify-center items-center gap-3">
          <img src="/logoBlack.png" className='mix-blend-multiply w-32' alt="" />
         </div>
       </div>
 
       {/* Steps */}
-      <div className="flex-1 px-6 ">
+      <div className="flex-1 px-6 pt-6">
         <div className="space-y-0">
-          {steps.map((step) => (
-            <div
-              key={step.id}
-              onClick={() => handleStepClick(step.id)}
-              className={`flex flex items-center gap-4 p-3 rounded-lg cursor-pointer transition-all duration-200 group ${
-                activeStep === step.id
-                  ? 'bg-sky-50 border border-sky-200'
-                  : 'hover:bg-gray-50'
-              }`}
-            >
-              {/* Step Number/Check Circle */}
-              <div className="flex-shrink-0">
-                {step.completed ? (
-                  <>
-<div className="flex flex-col items-center gap-2 mt">
-  <Check size={24} className="text-sky-600" />
- 
+  {steps.map((step , index) => {
+    const isActive = activeStep === step.id;
+     const isLastStep = index === steps.length - 1;
+     const isCompleted = activeStep > step.id;
+    return (
+      <div
+        key={step.id}
+        onClick={() => handleStepClick(step.id)}
+        className={`relative z-10 flex  gap-3 px-5 cursor-pointer group`}
+      >
+        {/* Circle */}
+     <div className="flex flex-col items-center ">
+        <div className={`w-6 h-6 rounded-full border-2  text-sm   font-bold flex items-center justify-center
+          ${isActive ? 'border-sky-600 text-sky-600' : 'border-gray-300 text-gray-500'}
+          ${isCompleted ? 'border-sky-600 text-sky-600 bg-sky-600' : 'bg-white border-gray-300 text-gray-500'}
+        `}>
+          {isCompleted ? <Check size={12} className="text-white" strokeWidth={4}/> : step.id}
+          
+        </div>
+
+        {/* Vertical dotted line */}
+      {!isLastStep && (
+  <div className={`h-8 border-l-2 ${isCompleted ? "border-sky-600" :"border-dashed"} border-gray-400 `}></div>
+)}
+
+      </div>
+  
+        {/* Title */}
+        <span
+          className={`text-sm truncate  ${
+            isActive
+              ? 'font-bold text-sky-900'
+              : isCompleted
+              ? 'text-gray-700'
+              : 'text-gray-600'
+          }`}
+        >
+          {step.title}
+        </span>
+        
+      </div>
+    );
+  })}
 </div>
-</>
 
-                ) : (
-                  <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-sm font-medium ${
-                    activeStep === step.id
-                      ? 'border-sky-600 bg-sky-600 text-white'
-                      : 'border-gray-300 text-gray-500'
-                  }`}>
-                    {step.id}
-                  </div>
-                )}
-              </div>
-
-              {/* Step Content */}
-              <div className="flex items-center gap-3 flex-1 min-w-0">
-                <div className={`flex-shrink-0 ${
-                  activeStep === step.id ? 'text-sky-600' : 'text-gray-400'
-                }`}>
-                  {step.icon}
-                </div>
-                <span className={`font-medium truncate ${
-                  activeStep === step.id 
-                    ? 'text-sky-900' 
-                    : step.completed 
-                      ? 'text-gray-700'
-                      : 'text-gray-600'
-                }`}>
-                  {step.title}
-                </span>
-                
-              </div>
-       
-            </div>
-             
-          ))}
         </div>
 
         {/* Progress Section */}
-        <div className="mt-8 p-2 bg-gray-50 rounded-lg">
+        <div className="p-4 mx-1 bg-gray-50 rounded-lg">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-gray-700 uppercase tracking-wide">
+            <span className="text-xs font-medium text-gray-700 uppercase tracking-wide">
               Resume Completeness:
             </span>
           </div>
@@ -153,7 +161,7 @@ const SideBar: React.FC<SidebarProps> = ({
             </div>
           </div>
         </div>
-      </div>
+     
 
       {/* Footer Links */}
       <div className="p-6 border-t border-gray-100 space-y-3">
@@ -172,12 +180,12 @@ const SideBar: React.FC<SidebarProps> = ({
         
         <div className="pt-4 border-t border-gray-100">
           <p className="text-xs text-gray-500">
-            © 2025, Hloom Limited. All rights reserved.
+            © 2025, Mattlob Limited. All rights reserved.
           </p>
         </div>
       </div>
     </div>
   );
-};
+}
 
 export default SideBar;

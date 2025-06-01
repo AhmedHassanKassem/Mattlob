@@ -16,6 +16,7 @@ interface CheckboxProps {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
   labelClassName?: string;
+  labelClassName2?: string;
 }
 
 const CheckBoxInput= forwardRef<HTMLInputElement, CheckboxProps>(({
@@ -28,6 +29,7 @@ const CheckBoxInput= forwardRef<HTMLInputElement, CheckboxProps>(({
   label,
   label2,
   labelClassName,
+  labelClassName2,
   style,
 }, ref) => {
   return (
@@ -47,7 +49,7 @@ const CheckBoxInput= forwardRef<HTMLInputElement, CheckboxProps>(({
           onChange={onChange}
           ref={ref}
         />
- <label htmlFor={name} className={labelClassName || "cursor-pointer"} style={style}>
+ <label htmlFor={name} className={labelClassName2 || "cursor-pointer"} style={style}>
         {label2}
       </label>
       {/* </div>  */}

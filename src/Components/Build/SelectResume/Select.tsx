@@ -12,7 +12,7 @@ const SelectResume = () => {
   if(loading){
     setTimeout(()=>{
     setLoading(!loading)
-    navigate("/")
+    navigate("/build-resume/fill-data")
     },3000)
   }
  },[loading])

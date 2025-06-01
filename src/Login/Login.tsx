@@ -11,12 +11,11 @@ const Login = () => {
   })
   const {
     register,
-    handleSubmit,
+
     setValue,
-    trigger,
-    getValues,
+
     formState: { errors },
-    watch,
+   
   } = useForm<ICandidateLogin>()
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>)=> {
