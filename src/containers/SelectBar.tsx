@@ -1,17 +1,22 @@
-import { FC } from "react"
+import { FC, useEffect } from "react"
 import Button from "./Button"
 import { useNavigate } from "react-router-dom"
 
 
 interface selectProops{
     selected? : boolean
+    selectedTemp? : any
 }
-const SelectBar : FC<selectProops>= ({selected}) => {
+const SelectBar : FC<selectProops>= ({selected , selectedTemp}) => {
     const navigate = useNavigate()
- 
+    useEffect(() => {
+    console.log(selectedTemp);
+    
+    }, [selected])
+    
   return (
     <div>
-<div className="fixed inset-x-0 bottom-0 z-50 h-20 bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.1)]">
+<div className="fixed inset-x-0 bottom-0 z-50 h-20 bg-white shadow-lg border border-gray-200">
   <div className="flex justify-end items-center pt-7 px-40">
     <div className="flex gap-4 text-lg font-bold">
      <Button className="text-sky-600" titleClassname="underline" title="Choose later" />

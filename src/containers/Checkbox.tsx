@@ -34,7 +34,7 @@ const CheckBoxInput= forwardRef<HTMLInputElement, CheckboxProps>(({
 }, ref) => {
   return (
     <>
-  <div className={className ||"flex items-center lg:justify-evenly justify-center" }>
+  <div className={className ||"flex items-center lg:justify-evenly justify-center gap-1" }>
  
       {/* <div className="relative flex items-center justify-center">  */}
         <label htmlFor={name} className={labelClassName || "cursor-pointer"} style={style}>

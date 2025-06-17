@@ -5,6 +5,7 @@ import React, { ReactNode, forwardRef } from 'react';
 interface SelectProps {
   className?: string;
   labelClassname?: string;
+  labelDivClassname?: string;
   forSelectClassName?: string;
   value?: string | number;
   errorMessage?: string;
@@ -25,6 +26,7 @@ interface SelectProps {
 const Select = forwardRef<HTMLSelectElement, SelectProps>(({
   className,
   labelClassname,
+  labelDivClassname,
   value,
   name,
   oneValue,
@@ -38,10 +40,9 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(({
   forSelect,
   onChange,
 }, ref) => {
-  return (
- <div className="lg:px-0 px-3">
-  <div>
-    <div className="min-h-[1.50rem] mb-1">
+return (
+  <div className="w-full">
+    <div className={labelDivClassname || "mb-1 h-[1.5rem]"}>
       {label && (
         <label htmlFor={forSelectLabel} className={labelClassname}>
           {label}
@@ -54,12 +55,13 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(({
       name={name}
       value={value}
       onChange={onChange}
-      className={className || '...default classes...'}
+      className={
+        className ||
+        'w-full border rounded px-2.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
+      }
       ref={ref}
     >
-      <option value="" id="option" className="text-sm">
-        {forSelect || "choose"}
-      </option>
+      <option value="">{forSelect || 'Choose'}</option>
       {oneValue || (
         <>
           {value1 && <option value={value1}>{value1}</option>}
@@ -73,9 +75,8 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(({
       {errorMessage}
     </p>
   </div>
-</div>
+);
 
-  );
 });
 Select.displayName = 'Select';
 export default Select;

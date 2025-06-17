@@ -15,9 +15,10 @@ interface SidebarProps {
 
 const SideBar: React.FC<SidebarProps> = ({ 
   currentStep = 1, 
-  completionPercentage = 20 
 }) => {
   const [activeStep, setActiveStep] = useState(currentStep);
+  const [percent, setPercent] = useState("20%");
+
 useEffect(() => {
   const path = window.location.pathname;
 
@@ -31,7 +32,19 @@ useEffect(() => {
   };
 
   const currentStep = stepMap[path] || 1;
-  setActiveStep(currentStep);
+  setActiveStep(currentStep)
+  const percentage: Record<string, string> = {
+    '/build-resume/fill-data': "20%",
+    '/build-resume/work-history': "45%",
+    '/build-resume/add-educ': "60%",
+    '/build-resume/add-skills': "75%",
+    '/build-resume/add-summary': "85%",
+    '/build-resume/finalize': "95%",
+
+  };
+
+  const currentPer = percentage[path] || "20%";
+  setPercent(currentPer);
 }, []);
 
 
@@ -74,12 +87,10 @@ useEffect(() => {
     }
   ];
 
-  const handleStepClick = (stepId: number) => {
-    setActiveStep(stepId);
-  };
+
 
   return (
-    <div className="w-60 h-screen bg-white shadow-md border-r border-gray-200 flex flex-col text-sm">
+    <div className="w-60 h-screen fixed border-r border-gray-200 flex flex-col text-sm">
       {/* Header */}
       <div className="p-3 border-b border-gray-100">
         <div className="flex justify-center items-center gap-3">
@@ -97,8 +108,7 @@ useEffect(() => {
     return (
       <div
         key={step.id}
-        onClick={() => handleStepClick(step.id)}
-        className={`relative z-10 flex  gap-3 px-5 cursor-pointer group`}
+        className={`relative z-10 flex  gap-3 px-5 group`}
       >
         {/* Circle */}
      <div className="flex flex-col items-center ">
@@ -138,7 +148,7 @@ useEffect(() => {
         </div>
 
         {/* Progress Section */}
-        <div className="p-4 mx-1 bg-gray-50 rounded-lg">
+        <div className="p-4 mx-1  rounded-lg">
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-medium text-gray-700 uppercase tracking-wide">
               Resume Completeness:
@@ -149,21 +159,19 @@ useEffect(() => {
             <div className="w-full bg-gray-200 rounded-full h-1 overflow-hidden">
               <div 
                 className="h-full bg-gradient-to-r from-sky-500 to-sky-600 rounded-full transition-all duration-500 ease-out"
-                style={{ width: `${completionPercentage}%` }}
+                style={{ width: `${percent}` }}
               />
             </div>
             <div className="flex justify-between items-center">
               <div className="text-right">
                 <span className="text-sm font-bold text-sky-600">
-                  {completionPercentage}%
+                  {percent}
                 </span>
               </div>
             </div>
           </div>
         </div>
      
-
-      {/* Footer Links */}
       <div className="p-6 border-t border-gray-100 space-y-3">
         <a href="#" className="block text-sm text-sky-600 hover:text-sky-800 transition-colors">
           Terms and Conditions

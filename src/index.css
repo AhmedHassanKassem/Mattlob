@@ -1,11 +1,18 @@
-@import 'tailwindcss';
 @import 'react-toastify/dist/ReactToastify.css';
 /* @import 'react-datepicker/dist/react-datepicker.css'; */
 @import 'animate.css';
+@import '@fontsource-variable/inter';
+
+@import '@fontsource/poppins';
+@import 'tailwindcss';
 
 /* globals.css */
 
-
+.resume-container {
+  overflow-wrap: break-word;
+  word-break: break-word;
+  max-width: 100%;
+}
 
 :root {
   --background: #ffffff;
@@ -25,18 +32,27 @@
     --foreground: #ededed;
   }
 }
+@media print {
+  * {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
 
 body {
   color: var(--foreground);
   background: var(--background);
   color: #000000;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Inter Variable', sans-serif;
 }
 input::placeholder {
   font-size: 12px;
 }
 
+head{
+  font-family: 'Poppins', sans;
 
+}
 #option {
   font-size: 14px;
   font-weight: 600;
@@ -55,7 +71,10 @@ input::placeholder {
   border: 1px solid #0369a1;
   outline: none;
 }
-
+.hide-scrollbar {
+    scrollbar-width: none;
+  -ms-overflow-style: none;
+}
 textarea::placeholder {
   font-size: 15px;
 }
