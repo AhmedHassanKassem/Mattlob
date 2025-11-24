@@ -14,6 +14,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement>{
   value?: string | number;
   name?: string;
   disabled?: boolean;
+  required?: boolean;
   className?: string;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void; 
   onKeyPressEnter?: (event: React.KeyboardEvent<HTMLInputElement>) => void; 
@@ -34,6 +35,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       onKeyPressEnter,
       className,
       disabled,
+      required = false,
       errorMessage,
       name,
       value,
@@ -48,23 +50,26 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     }
 };
   return (
-    <div className="lg:px-0 px-3">
+    <div className="lg:px-0 ">
     <div className="flex justify-between  lg:px-0 px-1"> 
     <label htmlFor="some" className={labelClass}>{label}</label>
     {htmlContent}
     </div>
     <i className={iconClass}></i>
-    <input
-      ref={ref}
-      id={id}
-      name={name}
-      value={value}
-      disabled={disabled}
-      type={typeof type !== "undefined" ? type : ""}
-      className={className || "text-black hidden"}
-      placeholder={placeholderType || ""}
-      onKeyDown={onKeyPressEnter}
-      onChange={handleChange} />
+<input
+  ref={ref}
+  id={id}
+  name={name}
+  {...(value !== undefined ? { value } : {})}
+  disabled={disabled}
+  required={required}
+  type={typeof type !== "undefined" ? type : ""}
+  className={className || "text-black hidden"}
+  placeholder={placeholderType || ""}
+  onKeyDown={onKeyPressEnter}
+  onChange={handleChange}
+/>
+
 <p
         className={`text-red-500 text-sm transition-opacity duration-700 mt-1 ease-in-out ${
           errorMessage ? 'opacity-100' : 'opacity-0'

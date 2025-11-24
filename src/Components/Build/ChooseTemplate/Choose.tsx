@@ -1,97 +1,91 @@
 import { useEffect, useState } from 'react';
 
 import Templates from './Templates';
-import SelectBar from '../../../containers/SelectBar';
+import CheckboxAdvanced from '../../../Containers/AnimateChekbox';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../Redux/store';
+import { useTranslation } from 'react-i18next';
+import i18n from '../../../i18n';
 
 // Choose component:
 const Choose = () => {
-const [selectedTempId , setSelectedTemplate] = useState(0)
-
-useEffect(() => {
-    const myTempId = JSON.parse(localStorage.getItem('tempId') || "[]")
-    if (myTempId) {
-      setSelectedTemplate(myTempId)
+  const [selectedTempId, setSelectedTemplate] = useState(0)
+  const [withColmun, setWithCoumn] = useState(false)
+  const [withImg, setWithImg] = useState(false)
+  const isDark = useSelector((state: RootState) => state.isDark.isDark);
+  const { t } = useTranslation()
+  useEffect(() => {
+    const tempId = Number(localStorage.getItem("tempId"))
+    if (tempId) {
+      setSelectedTemplate(tempId)
     }
 
   }, [])
 
-type FilterKey = 'photo' | 'columns';
+  const handlChange = (name: string, checked: boolean) => {
+    if (name == "withColumn") {
+      setWithCoumn(checked)
+    }
+    if (name == "withImg") {
+      setWithImg(checked)
+    }
 
-const [filters, setFilters] = useState<{ photo: string | null; columns: number | null }>({
-  photo: null,
-  columns: null,
-});
-
-const toggleFilter = (type: FilterKey, value: string | number) => {
-  setFilters(prev => ({
-    ...prev,
-    [type]: prev[type] === value ? null : value
-  }));
-};
-
+  }
 
   return (
-    <div className="w-full mx-auto py-10 px-6">
+    <div
+      className={`w-full mx-auto py-10 px-6 transition-colors duration-300 ${isDark ? "bg-gray-900 text-white" : "bg-white text-black"
+        }`}
+    >
       {/* Header */}
       <div className="text-center mb-10">
-        <h1 className="text-3xl font-bold">Best templates for jobseekers with little experience</h1>
-        <p className="text-gray-600">You can always change your template later.</p>
+        <h1 className="text-3xl font-bold">
+          {t("Best templates for jobseekers with little experience")}
+        </h1>
+        <p className={`${isDark ? "text-gray-300" : "text-gray-600"}`}>
+          {t("You can always change your template later.")}
+        </p>
       </div>
 
-      <div className="flex gap-10">
+      <div className="lg:flex gap-10 block">
         {/* Filter Panel */}
-        <div className="text-sm min-w-[150px]">
+        <div className="text-sm min-w-[150px] lg:block flex justify-evenly">
           <div className="mb-6">
-            <h2 className="font-semibold mb-2">Headshot</h2>
+            <h2 className="font-semibold mb-2">{t("headShot")}</h2>
             <label className="flex items-center gap-2 mb-1 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={filters.photo === 'with'}
-                onChange={() => toggleFilter('photo', 'with')}
+              <CheckboxAdvanced
+                checked={withImg}
+                onChange={() => handlChange("withImg", !withImg)}
               />
-              With photo
-            </label>
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={filters.photo === 'without'}
-                onChange={() => toggleFilter('photo', 'without')}
-              />
-              Without photo
+              {t("withPhoto")}
             </label>
           </div>
 
           <div>
-            <h2 className="font-semibold mb-2">Columns</h2>
+            <h2 className="font-semibold mb-2">{t("columns")}</h2>
             <label className="flex items-center gap-2 mb-1 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={filters.columns === 1}
-                onChange={() => toggleFilter('columns', 1)}
+              <CheckboxAdvanced
+                checked={withColmun}
+                onChange={() => handlChange("withColumn", !withColmun)}
               />
-              1 column
-            </label>
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={filters.columns === 2}
-                onChange={() => toggleFilter('columns', 2)}
-              />
-              2 columns
+              {t("withColumn")}
             </label>
           </div>
         </div>
 
         {/* Templates Grid */}
-        <div className="w-full grid grid-cols-10 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-       
-           <Templates/>
-        
-       
-                
-                   <SelectBar selected={selectedTempId !== 0} />
-            
-          
+        <div
+          className="w-full gap-6"
+          style={{
+            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+          }}
+        >
+          <Templates
+            key={i18n.language}
+            withCol={withColmun}
+            withImg={withImg}
+            selectedTempId={selectedTempId}
+          />
         </div>
       </div>
     </div>

@@ -7,6 +7,7 @@ interface ButtonProps {
   imgSrc?: string;
   imgAlt?: string;
   imgSrc1?: string;
+  btnTitle?: string;
   imgAlt1?: string;
   href?: string;
   style? : CSSProperties,
@@ -37,6 +38,7 @@ const Button: React.FC<ButtonProps> = ({
   titleClassname,
   titleClassname1,
   disabled,
+  btnTitle,
   title,
   title1,
   onClick,
@@ -48,6 +50,7 @@ const Button: React.FC<ButtonProps> = ({
       style={style}
       type={`${typeof btnType != "undefined" && btnType.length > 0 ? "submit" : "button"}`}
       onClick={onClick}
+      title={btnTitle}
       className={`btn-default cursor-pointer
         ${typeof className != "undefined" && className.length > 0 ? className : ""}`}
     >
@@ -62,7 +65,7 @@ const Button: React.FC<ButtonProps> = ({
     ) : (
       <></>
     )} */}
-
+   
       <span>
       {/* <FontAwesomeIcon className={iconStyle} icon={iconClass || faHome} /> */}
       <span className={titleClassname1}>{title1}</span>

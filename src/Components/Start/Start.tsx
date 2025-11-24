@@ -1,4 +1,4 @@
-import RotatingTextEffect from "../../containers/StartEffect"
+import RotatingTextEffect from "../../Containers/StartEffect"
 
 const Start = () => {
   return (

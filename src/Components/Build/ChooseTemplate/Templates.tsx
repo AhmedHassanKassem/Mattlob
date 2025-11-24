@@ -1,83 +1,92 @@
-import React, { FC, RefObject, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
+import { setFoundCv } from '../../../Redux/Slices/foundCv';
+import { ICertification, ICourse, IEducation, IExperience, ILanguage, IResume, ISkills, IVolunteer, tempProps } from '../../../Interfaces/interface';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../../Redux/store';
+import SelectBar from '../../../Containers/SelectBar';
+import { useTranslation } from 'react-i18next';
 
-export interface IExperience {
-  id? : number
-  role: string;
-  company: string;
-  from_year: string;
-  to_year: string;
-  remote: boolean;
-  present: boolean;
-  location: string;
-  details: string;
-}
-export interface IEducation {
-  id? : number
-  degree: string;
-  institution: string;
-  field_of_Study: string;
-  location: string;
-  year: string;
-}
-export interface IResume {
-  first_name: string;
-  last_name: string;
-  city: string;
-  country : string
-  phone : string
-  email : string
-  title: string;
-  summary: string;
-  experience: IExperience[];
-  skills: string[];
-  education: IEducation[];
-}
-export interface tempProps {
-  ref?: RefObject<HTMLDivElement | null>;
-  selectedTempId? : number
-  resume? : IResume
-}
+
+
 
 // Sample resume data used by all templates
 export const sampleResume: tempProps = {
-resume : {
-  first_name: 'FATIMA',
-  last_name: 'HASSAN',
-  title: 'Marketing Manager',
-  city: 'New York, NY',
-  country: 'USA',
-  phone: '+1 (555) 123-4567',
-  email: 'fatima.hassan@email.com',
-  summary : 'write some words about yourself , tell employers more',
-  experience: [
-    {
-      role: 'Senior Marketing Manager',
-      company: 'TechCorp Solutions',
-      from_year: '2020',
-      to_year: '',
-      remote: false,
-      present: true,
-      location: 'US',
-      details: 'Led cross-functional team of 12 marketing professionals. Increased lead generation by 85% through targeted digital campaigns.'
-    },
-    {
-      role: 'Marketing Specialist',
-      company: 'Digital Innovations Inc.',
-      from_year: '2018',
-      to_year: '2018',
-      remote: false,
-      present : false,
-      location: 'US',
-      details: 'Developed content marketing strategy increasing organic traffic by 200%. Managed social media accounts with 50K+ followers.',
-    },
-  ],
-  skills: ['Digital Marketing', 'Project Management', 'Data Analysis', 'Team Leadership'],
-  education: [
-    { degree: 'Master of Business Administration', institution: 'Columbia Business School', field_of_Study : "gghgsdfgdf" , location : "Columbia" , year: '2018' },
-    { degree: 'Bachelor of Arts in Marketing', institution: 'New York University', field_of_Study : "gghgsdfgdf", location : "USA" ,year: '2016' },
-  ],
- 
-}
+  color: '',
+  image: {},
+  resume: {
+    full_name: 'FATIMA',
+    city: {},
+    country: {},
+    village: {},
+    province: {},
+    phone: '+1 (555) 123-4567',
+    marital_status: 'Single',
+    military_status: 'Completed',
+    email: 'fatima.hassan@email.com',
+    summary: 'write some words about yourself , tell employers more',
+    work_History: [
+      {
+        role: {},
+        company: 'TechCorp Solutions',
+        from_year: '2020',
+        to_year: '2021',
+        from_month: '',
+        to_month: '',
+        address_info: '',
+        remote: false,
+        employmentType: false,
+        present: true,
+        country: {},
+        city: {},
+        province: {},
+        village: {},
+        details: 'Led cross-functional team of 12 marketing professionals. Increased lead generation by 85% through targeted digital campaigns.'
+      },
+      {
+        role: {},
+        company: 'Digital Innovations Inc.',
+        from_year: '2018',
+        to_year: '2018',
+        from_month: '',
+        to_month: '',
+        address_info: '',
+        remote: false,
+        employmentType: false,
+        present: false,
+        country: {},
+        city: {},
+        province: {},
+        village: {},
+        details: 'Developed content marketing strategy increasing organic traffic by 200%. Managed social media accounts with 50K+ followers.',
+      },
+    ],
+    volunteers: [
+      {
+        role: 'Senior Marketing Manager',
+        company: 'TechCorp Solutions',
+        from_year: '2020',
+        to_year: '2021',
+        from_month: '',
+        to_month: '',
+        country: {},
+        city: {},
+        details: 'Led cross-functional team of 12 marketing professionals. Increased lead generation by 85% through targeted digital campaigns.'
+      },
+
+    ],
+    skills: [{}],
+    education: [
+      {
+        edu_type: true, edu_level: 'Columbia Business School', university: {}, specialty: {}, college: {}, institute: {}, country: {}, city: {}, from_year: '',
+        to_year: ''
+      },
+      {
+        edu_type: true, edu_level: 'New York University', university: {}, specialty: {}, college: {}, institute: {}, country: {}, city: {}, from_year: '',
+        to_year: ''
+      },
+    ],
+
+  }
 };
 
 // Color options with tailwind classes and hex codes for inline style
@@ -93,602 +102,470 @@ const colorOptions = [
   { label: 'Pink', css: 'bg-pink-600', code: '#db2777' },
   { label: 'Orange', css: 'bg-orange-600', code: '#ea580c' },
 ];
-
 // Reusable lists
-const ExperienceList: React.FC<{ experience: IExperience[], accentColor: string }> = ({ experience }) => (
-  <div className="space-y-4">
-    {experience.map((item, i) => (
-      <div key={i}>
-        <h3 className="font-semibold text-gray-800">{item.role}</h3>
-
-        {item.company && item.from_year && (
-          <p className="text-sm italic">
-            {item.company} | {item.from_year}
-            {item.present ? ' - present' : item.to_year ? ` - ${item.to_year}` : ''}
-          </p>
-        )}
-
-        <p className="text-sm italic">{item.remote ? "Remotly" : "Not Remotly"}</p>
-        <p className="text-sm text-gray-700">{item.details}</p>
-      </div>
-    ))}
-  </div>
-);
-
-const EducationList: React.FC<{education: IEducation[]}> = ({education}) => (
-  <div className="space-y-3">
-    {education.map((item, i) => (
-      <div key={i}>
-        <h3 className="font-semibold text-gray-800">{item.degree}</h3>
-        <p className="text-sm italic">{item.institution} - {item.location} • {item.year}</p>
-        <p className="text-sm italic">{item.field_of_Study}</p>
-      </div>
-    ))}
-  </div>
-);
-
-const SkillsList: React.FC<{skills: string[]}> = ({skills}) => (
-  <ul className="flex flex-wrap gap-2 text-xs">
-    {skills?.map((skill, i) => (
-      <li key={i} className="bg-gray-100 px-2 py-1 rounded" style={{color : colorOptions[0].code}}>{skill}</li>
-    ))}
-  </ul>
-);
-
-// Template 1: Classic Professional (Simple two-column)
-// Template 1: Classic Layout
-// Template 1: Classic Professional
-const Template1: React.FC<{resume: IResume, accentColor: string}> = ({resume, accentColor}) => (
-  <div className="w-full resume-container shadow-xl max-w-4xl mx-auto bg-white p-12  border border-gray-100">
-    <header className="border-b-2 pb-8 mb-8" style={{borderColor: accentColor}}>
-      <h1 className="text-4xl font-bold text-gray-900 mb-2">{resume.first_name} {resume.last_name}</h1>
-      <p className="text-gray-600 mb-4">{resume.title}</p>
-      <div className="flex items-center text-sm text-gray-500 space-x-6">
-        <span>{resume.email}</span>
-        <span>{resume.phone}</span>
-        <span>{resume.city}, {resume.country}</span>
-      </div>
-    </header>
-
-    <section className="mb-8">
-      <h2 className="font-bold mb-4 flex items-center" style={{color: accentColor}}>
-        <div className="w-1 h-6 mr-3 rounded" style={{backgroundColor: accentColor}}></div>
-        Professional Summary
-      </h2>
-      <p className="text-gray-700 leading-relaxed text-base">
-        {resume.summary}
-      </p>
-    </section>
-
-    <section className="mb-8">
-      <h2 className="font-bold mb-4 flex items-center" style={{color: accentColor}}>
-        <div className="w-1 h-6 mr-3 rounded" style={{backgroundColor: accentColor}}></div>
-        Professional Experience
-      </h2>
-      <ExperienceList experience={resume.experience} accentColor={accentColor} />
-    </section>
-
-    <section className="mb-8">
-      <h2 className="font-bold mb-4 flex items-center" style={{color: accentColor}}>
-        <div className="w-1 h-6 mr-3 rounded" style={{backgroundColor: accentColor}}></div>
-        Education
-      </h2>
-      <EducationList education={resume.education} />
-    </section>
-
-    <section className="mt-5">
-      <h2 className="font-bold mb-4 flex items-center" style={{color: accentColor}}>
-        <div className="w-1 h-6 mr-3 rounded" style={{backgroundColor: accentColor}}></div>
-        Core Skills
-      </h2>
-      <SkillsList skills={resume.skills} />
-    </section>
-  </div>
-);
-
-// Template 2: Executive Sidebar Layout
-const Template2: React.FC<{resume: IResume, accentColor: string}> = ({resume, accentColor}) => (
-  <div className="w-full resume-container shadow-xl max-w-5xl mx-auto  flex  overflow-hidden bg-white">
-    <aside className="w-2/5 text-white p-10 flex flex-col" style={{backgroundColor: accentColor}}>
-      <div className="mb-8">
-        <h1 className="font-bold mb-1">{resume.first_name}</h1>
-        <h1 className="font-bold mb-4">{resume.last_name}</h1>
-        <p className="text-lg font-light opacity-90 mb-2">{resume.title}</p>
-      </div>
-      
-      <div className="mb-8">
-        <h3 className="text-lg font-semibold mb-4 border-b border-white border-opacity-30 pb-2">Contact</h3>
-        <div className="space-y-2 text-sm">
-          <p className="flex items-center"><span className="opacity-75">📧</span> <span className="ml-2">{resume.email}</span></p>
-          <p className="flex items-center"><span className="opacity-75">📱</span> <span className="ml-2">{resume.phone}</span></p>
-          <p className="flex items-center"><span className="opacity-75">📍</span> <span className="ml-2">{resume.city}, {resume.country}</span></p>
-        </div>
-      </div>
-
-      <div className="flex-grow">
-        <h3 className="text-lg font-semibold mb-4 border-b border-white border-opacity-30 pb-2">Skills & Expertise</h3>
-        <SkillsList skills={resume.skills} />
-      </div>
-    </aside>
-    
-    <main className="flex-grow p-10 bg-gray-50">
-      <section className="mb-8">
-        <h2 className="font-bold mb-2 text-gray-800" style={{color: accentColor}}>Professional Experience</h2>
-        <ExperienceList experience={resume.experience} accentColor={accentColor} />
-      </section>
-      <section className="mt-5">
-        <h2 className="font-bold mb-2 text-gray-800" style={{color: accentColor}}>Education</h2>
-        <EducationList education={resume.education} />
-      </section>
-    </main>
-  </div>
-);
-
-// Template 3: Modern Corporate Layout
-const Template3: React.FC<{resume: IResume, accentColor: string}> = ({resume, accentColor}) => (
-  <div className="w-full resume-container shadow-xl max-w-6xl mx-auto flex gap-8 p-12  bg-white">
-    <div className="w-1/3 bg-gradient-to-b from-gray-50 to-gray-100 p-8 ">
-      <div className="text-center mb-8">
-        <div className="w-24 h-24 mx-auto mb-4 rounded-full flex items-center justify-center text-white font-bold" style={{backgroundColor: accentColor}}>
-          {resume.first_name[0]}{resume.last_name[0]}
-        </div>
-        <h1 className="font-bold text-gray-900 mb-2">{resume.first_name} {resume.last_name}</h1>
-        <p className="text-gray-600 font-medium">{resume.title}</p>
-      </div>
-      
-      <div className="mb-8">
-        <h3 className="font-bold text-gray-800 mb-4" style={{color: accentColor}}>Contact Information</h3>
-        <div className="space-y-3 text-sm text-gray-600">
-          <p>{resume.email}</p>
-          <p>{resume.phone}</p>
-          <p>{resume.city}, {resume.country}</p>
-        </div>
-      </div>
-
-      <div>
-        <h3 className="font-bold text-gray-800 mb-4" style={{color: accentColor}}>Skills</h3>
-        <SkillsList skills={resume.skills} />
-      </div>
-    </div>
-    
-    <div className="w-2/3">
-      <section className="mb-8">
-        <h2 className="font-bold mb-2 pb-2 border-b-2" style={{color: accentColor, borderColor: accentColor}}>Professional Summary</h2>
-        <p className="text-gray-700 leading-relaxed">
-          {resume.summary}
-        </p>
-      </section>
-      
-      <section className="mb-8">
-        <h2 className="font-bold mb-2 pb-2 border-b-2" style={{color: accentColor, borderColor: accentColor}}>Experience</h2>
-        <ExperienceList experience={resume.experience} accentColor={accentColor} />
-      </section>
-      
-      <section className="mt-5">
-        <h2 className="font-bold mb-2 pb-2 border-b-2" style={{color: accentColor, borderColor: accentColor}}>Education</h2>
-        <EducationList education={resume.education} />
-      </section>
-    </div>
-  </div>
-);
-
-// Template 4: Creative Header Design
-const Template4: React.FC<{resume: IResume, accentColor: string}> = ({resume, accentColor}) => (
-  <div className="w-full resume-container shadow-xl max-w-5xl mx-auto bg-white   overflow-hidden">
-    <header className="relative p-12 text-white" style={{backgroundColor: accentColor}}>
-      <div className="absolute top-0 right-0 w-32 h-32 opacity-10">
-        <svg viewBox="0 0 100 100" className="w-full resume-container shadow-xl h-full">
-          <circle cx="50" cy="50" r="40" fill="currentColor"/>
-        </svg>
-      </div>
-      <div className="relative z-10">
-        <h1 className="font-bold mb-3">{resume.first_name} {resume.last_name}</h1>
-        <p className="font-light mb-2 opacity-90">{resume.title}</p>
-        <div className="flex items-center space-x-8 text-sm opacity-90">
-          <span>{resume.email}</span>
-          <span>{resume.phone}</span>
-          <span>{resume.city}, {resume.country}</span>
-        </div>
-      </div>
-    </header>
-    
-    <div className="p-12">
-      <section className="mt-5">
-        <h2 className="font-bold mb-2 text-gray-800">About Me</h2>
-        <p className="text-gray-700 leading-relaxed text-lg">
-          {resume.summary}
-        </p>
-      </section>
-      
-      <section className="mt-5">
-        <h2 className="font-bold mb-2 text-gray-800">Professional Experience</h2>
-        <ExperienceList experience={resume.experience} accentColor={accentColor} />
-      </section>
-      
-      <div className="grid grid-cols-2 gap-10">
-        <section className="mt-5">
-          <h2 className="font-bold mb-2 text-gray-800">Education</h2>
-          <EducationList education={resume.education} />
-        </section>
-        <section className="mt-5">
-          <h2 className="font-bold mb-2 text-gray-800">Skills</h2>
-          <SkillsList skills={resume.skills} />
-        </section>
-      </div>
-    </div>
-  </div>
-);
-
-// Template 5: Minimalist Professional
-const Template5: React.FC<{resume: IResume, accentColor: string}> = ({resume, accentColor}) => (
-  <div className="w-full resume-container shadow-xl max-w-5xl mx-auto   flex bg-white overflow-hidden">
-    <aside className="w-1/3 p-10 bg-gray-900 text-white flex flex-col">
-      <div >
-        <h1 className="font-light mb-2">{resume.first_name}</h1>
-        <h1 className="font-bold mb-2" style={{color: accentColor}}>{resume.last_name}</h1>
-        <p className="text-gray-300 font-medium tracking-wide">{resume.title}</p>
-      </div>
-      
-      <div >
-        <h3 className="text-lg font-semibold mb-4" style={{color: accentColor}}>Contact</h3>
-        <div className="space-y-3 text-sm text-gray-300">
-          <p>{resume.email}</p>
-          <p>{resume.phone}</p>
-          <p>{resume.city}</p>
-          <p>{resume.country}</p>
-        </div>
-      </div>
-      
-      <div className="flex-grow">
-        <h3 className="text-lg font-semibold mb-4" style={{color: accentColor}}>Skills</h3>
-        <SkillsList skills={resume.skills} />
-      </div>
-    </aside>
-    
-    <main className="w-2/3 p-10">
-      <section className="mt-5">
-        <h2 className="font-light mb-2" style={{color: accentColor}}>Experience</h2>
-        <ExperienceList experience={resume.experience} accentColor={accentColor} />
-      </section>
-      
-      <section className="mt-5">
-        <h2 className="font-light mb-2" style={{color: accentColor}}>Education</h2>
-        <EducationList education={resume.education} />
-      </section>
-    </main>
-  </div>
-);
-
-// Template 6: Card-Based Modern Design
-const Template6: React.FC<{resume: IResume, accentColor: string}> = ({resume, accentColor}) => (
-  <div className="w-full resume-container shadow-xl max-w-6xl mx-auto bg-gray-50 p-8 ">
-    <header className="bg-white  shadow-md p-10 mb-8 text-center relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-full h-2" style={{backgroundColor: accentColor}}></div>
-      <h1 className=" font-bold text-gray-900 mb-2">{resume.first_name} {resume.last_name}</h1>
-      <p className=" text-gray-600 mb-2">{resume.title}</p>
-      <div className="flex justify-center space-x-8 text-sm text-gray-500">
-        <span>{resume.email}</span>
-        <span>{resume.phone}</span>
-        <span>{resume.city}, {resume.country}</span>
-      </div>
-    </header>
-    
-    <div className="grid grid-cols-2 gap-8 mb-8">
-      <section className="bg-white  shadow-md p-8">
-        <h2 className="font-bold mb-4 flex items-center" style={{color: accentColor}}>
-          <div className="w-2 h-2 rounded-full mr-3" style={{backgroundColor: accentColor}}></div>
-          Professional Summary
-        </h2>
-        <p className="text-gray-700 leading-relaxed">
-          {resume.summary}
-        </p>
-      </section>
-      
-      <section className="bg-white  shadow-md p-8">
-        <h2 className="font-bold mb-4 flex items-center" style={{color: accentColor}}>
-          <div className="w-2 h-2 rounded-full mr-3" style={{backgroundColor: accentColor}}></div>
-          Core Skills
-        </h2>
-        <SkillsList skills={resume.skills} />
-      </section>
-    </div>
-    
-    <section className="bg-white  shadow-md p-8 mb-8">
-      <h2 className="font-bold mb-2 flex items-center" style={{color: accentColor}}>
-        <div className="w-2 h-2 rounded-full mr-3" style={{backgroundColor: accentColor}}></div>
-        Professional Experience
-      </h2>
-      <ExperienceList experience={resume.experience} accentColor={accentColor} />
-    </section>
-    
-    <section className="bg-white  shadow-md p-8">
-      <h2 className="font-bold mb-2 flex items-center" style={{color: accentColor}}>
-        <div className="w-2 h-2 rounded-full mr-3" style={{backgroundColor: accentColor}}></div>
-        Education
-      </h2>
-      <EducationList education={resume.education} />
-    </section>
-  </div>
-);
-
-// Template 7: Timeline Style
-const Template7: React.FC<{resume: IResume, accentColor: string}> = ({resume, accentColor}) => (
-  <div className="w-full resume-container shadow-xl max-w-4xl mx-auto bg-white  p-12">
-    <header className="text-center mb-12 relative">
-      <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 w-16 h-1 rounded" style={{backgroundColor: accentColor}}></div>
-      <h1 className="font-bold text-gray-900 mb-3">{resume.first_name} {resume.last_name}</h1>
-      <p className="text-gray-600 mb-2" style={{color: accentColor}}>{resume.title}</p>
-      <div className="flex justify-center space-x-6 text-sm text-gray-500">
-        <span className="flex items-center">📧 {resume.email}</span>
-        <span className="flex items-center">📱 {resume.phone}</span>
-        <span className="flex items-center">📍 {resume.city}, {resume.country}</span>
-      </div>
-    </header>
-    
-    <section className="mb-6">
-      <h2 className=" font-bold mb-2 relative" style={{color: accentColor}}>
-        <div className="absolute -left-6 top-2 w-3 h-3 rounded-full" style={{backgroundColor: accentColor}}></div>
-        Professional Summary
-      </h2>
-      <p className="text-gray-700 leading-relaxed text-lg ml-4">
-        {resume.summary}
-      </p>
-    </section>
-    
-    <section className="mb-6">
-      <h2 className=" font-bold mb-2 relative" style={{color: accentColor}}>
-        <div className="absolute -left-6 top-2 w-3 h-3 rounded-full" style={{backgroundColor: accentColor}}></div>
-        Work Experience
-      </h2>
-      <div className="ml-4">
-        <ExperienceList experience={resume.experience} accentColor={accentColor} />
-      </div>
-    </section>
-    
-    <div className="grid grid-cols-2 gap-12">
-      <section className="mt-5">
-        <h2 className=" font-bold mb-2 relative" style={{color: accentColor}}>
-          <div className="absolute -left-6 top-2 w-3 h-3 rounded-full" style={{backgroundColor: accentColor}}></div>
-          Skills
-        </h2>
-        <div className="ml-4">
-          <SkillsList skills={resume.skills} />
-        </div>
-      </section>
-      
-      <section className="mt-5">
-        <h2 className=" font-bold mb-2 relative" style={{color: accentColor}}>
-          <div className="absolute -left-6 top-2 w-3 h-3 rounded-full" style={{backgroundColor: accentColor}}></div>
-          Education
-        </h2>
-        <div className="ml-4">
-          <EducationList education={resume.education} />
-        </div>
-      </section>
-    </div>
-  </div>
-);
-
-// Template 8: Photo-Centric Professional
-const Template8: React.FC<{resume: IResume, accentColor: string}> = ({resume, accentColor}) => (
-  <div className="w-full resume-container shadow-xl max-w-5xl mx-auto  shadow-xl flex overflow-hidden bg-white">
-    <aside className="w-2/5 bg-gradient-to-b from-gray-100 to-gray-200 p-10 flex flex-col items-center text-center">
-      <div className="w-40 h-40 rounded-full mb-8 shadow-lg flex items-center justify-center text-white text-4xl font-bold" style={{backgroundColor: accentColor}}>
-        {resume.first_name[0]}{resume.last_name[0]}
-      </div>
-      
-      <h1 className=" font-bold mb-2 text-gray-900">{resume.first_name} {resume.last_name}</h1>
-      <p className="text-lg font-medium mb-8" style={{color: accentColor}}>{resume.title}</p>
-      
-      <div className="mb-8">
-        <h3 className="font-bold text-gray-800 mb-4">Contact Details</h3>
-        <div className="space-y-3 text-sm text-gray-600">
-          <p className="break-all">{resume.email}</p>
-          <p>{resume.phone}</p>
-          <p>{resume.city}, {resume.country}</p>
-        </div>
-      </div>
-      
-      <div>
-        <h3 className="font-bold text-gray-800 mb-4">Skills</h3>
-        <SkillsList skills={resume.skills} />
-      </div>
-    </aside>
-    
-    <main className="w-3/5 p-10">
-      <section className="mt-5">
-        <h2 className="font-bold mb-2 pb-3 border-b-2" style={{color: accentColor, borderColor: accentColor}}>
-          Professional Summary
-        </h2>
-        <p className="text-gray-700 leading-relaxed">
-          {resume.summary}
-        </p>
-      </section>
-      
-      <section className="mt-5">
-        <h2 className="font-bold mb-2 pb-3 border-b-2" style={{color: accentColor, borderColor: accentColor}}>
-          Experience
-        </h2>
-        <ExperienceList experience={resume.experience} accentColor={accentColor} />
-      </section>
-      
-      <section className="mt-5">
-        <h2 className="font-bold mb-2 pb-3 border-b-2" style={{color: accentColor, borderColor: accentColor}}>
-          Education
-        </h2>
-        <EducationList education={resume.education} />
-      </section>
-    </main>
-  </div>
-);
-
-// Template 9: Clean Sectioned Layout
-const Template9: React.FC<{resume: IResume, accentColor: string}> = ({resume, accentColor}) => (
-  <div className="w-full resume-container shadow-xl max-w-5xl mx-auto bg-white   p-12">
-    <header className="mb-12 pb-8 border-b-4" style={{borderColor: accentColor}}>
-      <h1 className=" font-bold text-gray-900 mb-3">{resume.first_name} {resume.last_name}</h1>
-      <p className="font-light mb-2" style={{color: accentColor}}>{resume.title}</p>
-      <div className="flex items-center space-x-8 text-gray-600">
-        <span className="flex items-center"><span className="mr-2">✉</span>{resume.email}</span>
-        <span className="flex items-center"><span className="mr-2">☎</span>{resume.phone}</span>
-        <span className="flex items-center"><span className="mr-2">⌘</span>{resume.city}, {resume.country}</span>
-      </div>
-    </header>
-
-    <section className="p-4 bg-gray-50 ">
-      <h2 className="font-bold mb-2" style={{color: accentColor}}>Professional Summary</h2>
-      <p className="text-gray-700 leading-relaxed text-lg">
-        {resume.summary}
-      </p>
-    </section>
-
-    <section className="p-4 bg-gray-50 ">
-      <h2 className="font-bold mb-2" style={{color: accentColor}}>Professional Experience</h2>
-      <ExperienceList experience={resume.experience} accentColor={accentColor} />
-    </section>
-
-    <div className="grid grid-cols-2 gap-8">
-      <section className="p-8 bg-gray-50 ">
-        <h2 className="font-bold mb-2" style={{color: accentColor}}>Skills</h2>
-        <SkillsList skills={resume.skills} />
-      </section>
-
-      <section className="p-8 bg-gray-50 ">
-        <h2 className="font-bold mb-2" style={{color: accentColor}}>Education</h2>
-        <EducationList education={resume.education} />
-      </section>
-    </div>
-  </div>
-);
-
-// Template 10: Executive Header with Accent Strip
-const Template10: React.FC<{resume: IResume, accentColor: string}> = ({resume, accentColor}) => (
-  <div
-  className="w-full resume-container shadow-xl max-w-4xl mx-auto shadow-xl bg-white"
-  style={{ breakInside: "avoid", pageBreakInside: "avoid", boxSizing: "border-box" }}
->
-    <div className="relative">
-      <div className="h-2" style={{backgroundColor: accentColor}}></div>
-      <div className="bg-gray-900 text-white p-12">
-        <div className="flex items-end justify-between">
-          <div>
-            <h1 className="text-4xl font-bold mb-2">{resume.first_name} {resume.last_name}</h1>
-            <p className="font-light opacity-90">{resume.title}</p>
-          </div>
-          <div className="text-right text-sm opacity-75 space-y-1">
-            <p>{resume.email}</p>
-            <p>{resume.phone}</p>
-            <p>{resume.city}, {resume.country}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div className="p-12">
-      <section className="mt-5">
-        <h2 className="font-bold mb-2 flex items-center" style={{color: accentColor}}>
-          <div className="w-8 h-1 mr-4 rounded" style={{backgroundColor: accentColor}}></div>
-          About
-        </h2>
-        <p className="text-gray-700 leading-relaxed text-lg">
-          {resume.summary}
-        </p>
-      </section>
-
-      <section className="mt-5">
-        <h2 className="font-bold mb-2 flex items-center" style={{color: accentColor}}>
-          <div className="w-8 h-1 mr-4 rounded" style={{backgroundColor: accentColor}}></div>
-          Professional Experience
-        </h2>
-        <ExperienceList experience={resume.experience} accentColor={accentColor} />
-      </section>
-
-      <div className="grid grid-cols-2 gap-12">
-        <section className="mt-5">
-          <h2 className="font-bold mb-2 flex items-center" style={{color: accentColor}}>
-            <div className="w-8 h-1 mr-4 rounded" style={{backgroundColor: accentColor}}></div>
-            Education
-          </h2>
-          <EducationList education={resume.education} />
-        </section>
-        
-        <section className="mt-5">
-          <h2 className="font-bold mb-2 flex items-center" style={{color: accentColor}}>
-            <div className="w-8 h-1 mr-4 rounded" style={{backgroundColor: accentColor}}></div>
-            Skills
-          </h2>
-          <SkillsList skills={resume.skills} />
-        </section>
-      </div>
-    </div>
-  </div>
-);
 
 // Choose component:
-const Templates :  FC<tempProps> = ({selectedTempId , resume , ref = null}) => {
-  const [selectedTemplate, setSelectedTemplate] = useState(1);
+const Templates: FC<tempProps> = (props) => {
+  const {
+    selectedTempId,
+    resume,
+    ref = null,
+    color,
+    withCol = false,
+    withImg = false,
+  } = props;
+  const { t } = useTranslation()
+  const [selectedTemplate, setSelectedTemplate] = useState<number>(selectedTempId!);
+  const [temps, setTemps] = useState<any[]>([]);
   const [selectedColor, setSelectedColor] = useState(colorOptions[0].code);
+  const dispatch: AppDispatch = useDispatch()
+  const findCv = useSelector((state: RootState) => state.foundCv.localStorageCv);
+  const monthNames = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+
+  const ExperienceList: React.FC<{ experience?: IExperience[], accentColor: string }> = ({ experience }) => (
+    <div className="space-y-4">
+      {(Array.isArray(experience) ? experience : []).map((item, i) => (
+        <div key={i}>
+          <h3 className="text-gray-800">{lang === 'en' ? item.role.en_name : item.role.ar_name}</h3>
+
+          {item.company && item.from_year && (
+            <p className="text-sm ">
+              {item.company} | {item.from_year} -
+              {" " + item.to_year}
+            </p>
+          )}
+
+          <p className="text-sm ">{lang === "en" ? item.country.en_name : item.country.ar_name},
+            {lang === "en" ? item.city.en_name : item.city.ar_name}</p>
+          <p className="text-sm text-gray-700 text-justify break-words whitespace-normal">{item.details}</p>
+        </div>
+      ))}
+    </div>
+  );
+  const CourseList: React.FC<{ course?: ICourse[], accentColor: string }> = ({ course: course }) => (
+    <div className="space-y-4">
+      {(Array.isArray(course) ? course : []).map((item, i) => (
+        <div key={i}>
+          <div className='flex justify-between'>
+            <h3 className="text-gray-800">{item.course_name}</h3>
+
+            {item.from_year && (
+              <p className="text-xs text-gray-700">
+                {monthNames[Number(item.from_month) - 1] + ", " + item.from_year} -
+                {" " + (item.to_month === "Present" ? "Present" : monthNames[Number(item.to_month) - 1] + ", " + item.to_year)}
+              </p>
+
+            )}
+
+          </div>           {item.institution && <p className="text-sm">
+            {item.institution} </p>}
+          <p className="text-sm ">{lang === 'en' ? item.country.en_name : item.country.ar_name}, {lang === 'en' ? item.city.en_name : item.city.ar_name}</p>
+          <p className="text-sm text-gray-700">{item.details}</p>
+        </div>
+      ))}
+    </div>
+  );
+  const VolunteersList: React.FC<{ volunteers?: IVolunteer[], accentColor: string }> = ({ volunteers: volunteers }) => (
+    <div className="space-y-4">
+      {(Array.isArray(volunteers) ? volunteers : []).map((item, i) => (
+        <div key={i}>
+          <h3 className="text-gray-800">{item.role}</h3>
+
+          {item.company && item.from_year && (
+            <p className="text-sm ">
+              {item.company} | {item.from_year} -
+              {" " + item.to_year}
+            </p>
+          )}
+
+          <p className="text-sm ">{lang === 'en' ? item.country.en_name : item.country.ar_name}, {lang === 'en' ? item.city.en_name : item.city.ar_name}</p>
+          <p className="text-sm text-gray-700 text-justify break-words whitespace-normal">{item.details}</p>
+        </div>
+      ))}
+    </div>
+  );
+
+  const EducationList: React.FC<{ education?: IEducation[], accentColor: string }> = ({ education }) => (
+    <div className="space-y-3">
+      {(Array.isArray(education) ? education : []).map((item, i) => (
+        <div key={i}>
+          <h3 className="text-gray-800">{item.edu_type}</h3>
+          <div className='flex justify-between'>
+            <div>
+              <p className="text-sm">{lang === 'en' ? item.college.en_name : item.college.ar_name
+                || lang === 'en' ? item.institute.en_name : item.institute.ar_name} - {lang === 'en' ? item.specialty.en_name : item.specialty.ar_name}</p>
+              <p className="text-sm">{lang === 'en' ? item.university.en_name : item.university.ar_name} - {lang === 'en' ? item.city.en_name : item.city.ar_name}</p>
+            </div>
+            <p className='text-xs'>{item.from_year} - {item.to_year}</p>
+
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+  // const Certifications: React.FC<{ cert?: ICertification[], accentColor: string }> = ({ cert }) => (
+  //   <div className="space-y-3">
+  //     {(Array.isArray(cert) ? cert : []).map((item, i) => (
+  //       <div key={i}>
+  //         <h3 className="text-gray-800">{item.name}</h3>
+  //         <p className="text-sm ">{item.issuer}</p>
+  //         <p className="text-sm ">{item.date}</p>
+  //       </div>
+  //     ))}
+  //   </div>
+  // );
+  const Languages: React.FC<{ lang?: ILanguage[], accentColor: string }> = ({ lang }) => (
+    <div className="space-y-3">
+      {(Array.isArray(lang) ? lang : []).map((item, i) => (
+        <div key={i} className='flex items-center gap-2'>
+          <h3 className="text-gray-800">{t(`${item.language}`)}</h3>
+          <p className="text-xs  mt-1">{t(`${item.proficiency}`)}</p>
+        </div>
+      ))}
+    </div>
+  );
+  // const Links: React.FC<{ link?: string[] }> = ({ link }) => (
+  //   <div className="space-y-3 flex">
+  //     {(Array.isArray(link) ? link : []).map((item, i) => (
+  //       <div key={i} className='flex items-center gap-2'>
+  //         <p className="text-xs  mt-1 text-blue-400">{item}</p>
+  //       </div>
+  //     ))}
+  //   </div>
+  // );
+
+  const SkillsList: React.FC<{ skills?: ISkills[] }> = ({ skills }) => (
+    <ul className="flex flex-wrap gap-2 text-xs">
+      {(Array.isArray(skills) ? skills : []).map((skill, i) => (
+        <li key={i} className="bg-gray-100 px-2 py-1 rounded" style={{ color: colorOptions[0].code }}>{lang === 'en' ? skill.en_Name : skill.ar_Name}</li>
+      ))}
+    </ul>
+  );
 
 
- 
-const templates = [
-  { id: 1, type: Template1 },
-  { id: 2, type: Template2 },
-  { id: 3, type: Template3 },
-  { id: 4, type: Template4 },
-  { id: 5, type: Template5 },
-  { id: 6, type: Template6 },
-  { id: 7, type: Template7 },
-  { id: 8, type: Template8 },
-  { id: 9, type: Template9 },
-  { id: 10, type: Template10 },
-];
-const findTemplate : any = templates.find((temp)=> temp.id == selectedTempId)
+  // Template 1: Classic Professional (Simple two-column)
+  // Template 1: Classic Layout
+  // Template 1: Classic Professional
+  // Template 1: Classic Professional Layout
+
+  const formatDate = (date: string | number) => {
+    const d = new Date(date);
+    if (isNaN(d.getTime())) return "Invalid date";
+
+    return new Intl.DateTimeFormat('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    }).format(d);
+  };
+  const normalizeLanguages = (languages: any): ILanguage[] => {
+    if (!languages) return [];
+    if (Array.isArray(languages)) return languages;
+    try {
+      if (typeof languages === "string") {
+        const parsed = JSON.parse(languages);
+        return Array.isArray(parsed) ? parsed : [];
+      }
+    } catch {
+      return [];
+    }
+    return [];
+  };
+  // const getImageSrc = () => {
+  //   const location = useLocation()
+  //   const path = location.pathname
+  //   const resume: ICVData = JSON.parse(localStorage.getItem('resumeData')!);
+  //   if (resume?.image?.base64Image) {
+
+  //     return `data:image/${resume.image.fileExtension};base64,${resume.image?.base64Image}`;
 
 
-const selectTemplate = (template : any)=>{
-   setSelectedTemplate(template.id);
-      localStorage.setItem("tempId" , template.id)
-}
-useEffect(() => {
+  //   } else if (resume?.attach?.path) {
+  //     if (path === '/build-resume/choose-temp') {
+  //       return `/sample.webp`;
+  //     } else {
+  //       const baseUrl = 'http://magedzz-001-site4.anytempurl.com';
+  //       return `${baseUrl}${resume.attach.path}`;
+  //     }
 
-}, [selectedTempId])
+  //   }
+  //   return null; // ✅ بدل string فاضية
+  // };
 
-const baseWidth = 700;
+
+  const Template1: React.FC<{ resume: IResume, accentColor: string }> = ({ resume, accentColor }) => (
+    <div
+      className='border p-5'
+    >
+      {/* HEADER */}
+
+      <header className="text-center pb-4 mb-4">
+        <h1 className="text-2xl font-bold text-black">{resume.full_name}</h1>
+        <p className="text-sm text-gray-700 mt-1">{lang === 'en' ? resume.country?.en_name : resume.country?.ar_name},
+          {lang === 'en' ? resume.city?.en_name : resume.city?.ar_name + ","}
+          {lang === 'en' ? resume.province?.en_name : resume.province?.ar_name}
+          {lang === 'en' ? "," + resume.village?.en_name : resume.village?.ar_name}
+          {resume.address_info && "," + resume.address_info}</p>
+
+
+        <div className="flex justify-center gap-6 text-xs text-gray-700 mt-2">
+          <p>{resume.email}</p>
+          <p>{resume.phone}</p>
+
+        </div>
+      </header>
+
+
+      {/* OBJECTIVE */}
+      <section className="mb-6">
+        <h2 className="font-bold text-black text-مل mb-1 border-b pb-1" style={{ borderColor: "#000" }}>
+          {t("objective")}
+        </h2>
+        <p className="text-sm text-gray-800 text-justify break-words whitespace-normal leading-relaxed">{resume.summary}</p>
+      </section>
+
+
+      {/* EXPERIENCE */}
+      <section className="mb-6">
+        <h2 className="font-bold text-black text-lg mb-1 border-b pb-1">{t("experience")}</h2>
+        <ExperienceList experience={resume.work_History} accentColor={accentColor} />
+      </section>
+      {resume.volunteers && resume.volunteers.length > 0 && <section className="mb-6">
+        <h2 className="font-bold text-black text-lg mb-1 border-b pb-1">{t("volunteers")}</h2>
+        <VolunteersList volunteers={resume.volunteers} accentColor={accentColor} />
+      </section>}
+
+      {/* EDUCATION */}
+      {resume.education && resume.education.length > 0 && <section className="mb-6">
+        <h2 className="font-bold text-black text-lg mb-1 border-b pb-1">{t("education")}</h2>
+        <EducationList education={resume.education} accentColor={accentColor} />
+      </section>}
+
+
+      {resume.courses && resume.courses.length > 0 && <section className="mb-6">
+        <h2 className="font-bold text-black text-lg mb-1 border-b pb-1">{t("courses")}</h2>
+        <CourseList course={resume.courses!} accentColor={accentColor} />
+      </section>}
+
+
+      {normalizeLanguages(resume.languages).length > 0 && (
+        <section className="mb-6">
+          <h2 className="font-bold mb-1 border-b pb-1 flex items-center" style={{ color: accentColor }}>
+            {t("languages")}
+          </h2>
+          <Languages lang={normalizeLanguages(resume.languages)} accentColor={accentColor} />
+        </section>
+      )}
+
+      {/* Certifications Section */}
+      {resume.certifications && resume.certifications.length > 0 && (
+        <section className="mt-5">
+          <h2 className="font-bold mb-4 flex items-center" style={{ color: accentColor }}>
+            <span className="w-1 h-6 mr-3 rounded" style={{ backgroundColor: accentColor }}></span>
+            {t("Certifications")}
+          </h2>
+          <div className="space-y-2">
+            {resume.certifications.map((cert: ICertification, index: number) => (
+              <div key={index} className="text-gray-700">
+                <span className="font-medium">{cert.name}</span>
+                {cert.issuer && <span className="text-gray-500"> - {cert.issuer}</span>}
+                {cert.date && <span className="text-gray-500"> ({cert.date})</span>}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* SKILLS */}
+      {resume.skills && resume.skills.length > 0 && <section className="mb-6">
+        <h2 className="font-bold text-black text-sm mb-1 border-b pb-1">{t("skills")}</h2>
+        <SkillsList skills={resume.skills} />
+      </section>}
+
+
+      {/* PERSONAL INFO */}
+      <section>
+        <h2 className="font-bold text-black text-sm mb-1 border-b pb-1">{t("personal information")}</h2>
+        <ul className="text-sm text-gray-800 leading-relaxed list-disc mx-5">
+          {resume.birth_date && <li>{t("Date of birth")} :  {formatDate(resume.birth_date)}</li>}
+          {resume.military_status && <li>{t("Military status")} :  {t(resume.military_status)}</li>}
+          {resume.marital_status && <li>{t("Marital status")} :  {t(resume.marital_status)}</li>}
+        </ul>
+      </section>
+
+    </div>
+
+  );
+
+
+
+  const templates = [
+    { id: 1, type: Template1, withColumn: false, withImage: false },
+    // { id: 2, type: Template2, withColumn: true, withImage: false },
+    // { id: 3, type: Template3, withColumn: true, withImage: true },
+    // { id: 4, type: Template4, withColumn: false, withImage: true },
+    // { id: 5, type: Template5, withColumn: true, withImage: false },
+    // { id: 6, type: Template6, withColumn: false, withImage: false },
+    // { id: 7, type: Template7, withColumn: false, withImage: false },
+    // { id: 8, type: Template8, withColumn: true, withImage: true },
+    // { id: 9, type: Template9, withColumn: false, withImage: false },
+    // { id: 10, type: Template10, withColumn: false, withImage: false },
+  ];
+
+
+  const findTemplate: any = templates.find((temp) => temp.id === Number(selectedTempId));
+
+  const isWithColSet = Object.prototype.hasOwnProperty.call(props, "withCol");
+  const isWithImgSet = Object.prototype.hasOwnProperty.call(props, "withImg");
+
+
+  useEffect(() => {
+    const tempId = Number(localStorage.getItem("tempId"))
+    const color = localStorage.getItem("color")
+    if (tempId) {
+      setSelectedTemplate(tempId)
+      setSelectedColor(color!)
+    } else {
+      setSelectedTemplate(selectedTempId!)
+    }
+
+  }, [findCv, selectedTempId])
+  useEffect(() => {
+    let matchedTemplate: any[] = [];
+
+    if (!isWithColSet && !isWithImgSet) {
+      setTemps(templates); // ✅ مفيش فلترة
+      return;
+    }
+
+    if (withCol && withImg) {
+      matchedTemplate = templates.filter(t => t.withColumn && t.withImage);
+    } else if (withCol) {
+      matchedTemplate = templates.filter(t => t.withColumn);
+    } else if (withImg) {
+      matchedTemplate = templates.filter(t => t.withImage);
+    } else {
+      matchedTemplate = templates;
+    }
+
+    setTemps(matchedTemplate);
+
+  }, [selectedTempId, withCol, withImg, findCv]);
+
+
+
+
+
+
+
+
+  const baseWidth = 700;
   const scale = 0.3; // or tweak to 0.35 or 0.5 based on spacing
 
+  const selectTemp = (template: any) => {
+    const tryParseJSON = (data: string | null | undefined, fallback: any) => {
+      try {
+        if (typeof data === "string") {
+          const parsed = JSON.parse(data);
+          return parsed ?? fallback;
+        }
+        return fallback;
+      } catch {
+        return fallback;
+      }
+    };
+
+    const heading = tryParseJSON(findCv?.heading, {});
+    const experience = tryParseJSON(findCv?.work_History, []);
+    const education = tryParseJSON(findCv?.education, []);
+    const skills = tryParseJSON(findCv?.skills, []);
+    const languages = tryParseJSON(findCv?.languages, []);
+
+    // ✅ split الاسم بشكل آمن
+    const fullName = heading?.name?.trim?.().split(" ") ?? [];
+    const first_name = fullName[0] || "";
+
+    const fullResume: IResume = {
+      full_name: first_name,
+      city: heading?.city || "",
+      country: heading?.country || "",
+      phone: heading?.phone || "",
+      email: heading?.email || "",
+      summary: heading?.summary || "",
+      work_History: Array.isArray(experience) ? experience : [],
+      skills: Array.isArray(skills) ? skills : [],
+      languages: Array.isArray(languages) ? languages : [],
+      education: Array.isArray(education) ? education : [],
+    };
+
+    dispatch(setFoundCv(findCv || {}));
+    localStorage.setItem("resumeData", JSON.stringify(fullResume));
+    localStorage.setItem("tempId", template.id);
+
+    setSelectedTemplate(template.id);
+    setSelectedColor(findCv?.color || selectedColor);
+    localStorage.setItem("color", findCv?.color || selectedColor);
+
+    // ✅ الشرط اتظبط
+    if (selectedTempId! > 0) {
+      setSelectedTemplate(template.id);
+    }
+  };
+
+
+
+  const setColor = (id?: number, colorCode?: string) => {
+    setSelectedTemplate(id!);
+    setSelectedColor(colorCode!);
+    localStorage.setItem('color', colorCode!.toString());
+
+  }
+  const path = window.location.pathname;
+  const lang = useSelector((state: RootState) => state.lang.lang)
   return (
     <>
-      {window.location.pathname === "/build-resume/choose-temp" ? 
-        templates.map((Template, index) => (
+      {path === "/build-resume/choose-temp" ? <div className='grid grid-cols-12'>
+        {temps?.map((Template, index) => (
           <div
+            dir={lang === "en" ? '' : 'ltr'}
             key={index}
-            className={`border-4 rounded-xl p-2 mb-20 hover:border-sky-700 transition cursor-pointer w-full flex flex-col items-center ${
-              selectedTemplate === Template.id ? "border-dashed border-sky-700" : "border-transparent"
-            }`}
-            onClick={() => selectTemplate(Template)}
+            className={`lg:col-span-4 sm:col-span-6 md:col-span-6 col-span-12 ${temps.length <= 3 ? "h-[450px]" : "h-full"} border-4 rounded-xl p-2 mb-20 hover:border-sky-700 transition cursor-pointer w-full flex flex-col items-center ${selectedTemplate == Template.id ? "border-dashed border-sky-700" : "border-transparent"
+              }`}
+            onClick={() => selectTemp(Template)}
           >
             {/* Fixed preview box with overflow hidden */}
             <div
-              className="relative"
+              className="relative bg-white shadow-md overflow-auto scrollbar-hide"
               style={{
                 width: `${baseWidth * scale}px`,
-                height: `${1100 * scale}px`, // 990 = approx A4 height at 700px width
+                height: `${900 * scale}px`,
               }}
             >
+
               <div
                 style={{
                   transform: `scale(${scale})`,
                   transformOrigin: "top left",
                   width: `${baseWidth}px`,
+                  height: "auto"
                 }}
               >
-                {Template && (
-                  <Template.type
-                    resume={sampleResume.resume!}
-                    accentColor={selectedTemplate === Template.id ? selectedColor : "#000"}
-                  />
-                )}
+
+                <div style={{
+                  maxHeight: `${900 / scale}px`,
+                  overflowY: "auto",
+                }}>
+                  {Template && (
+                    <Template.type
+                      resume={sampleResume.resume! || resume!}
+                      accentColor={selectedTemplate === Template.id ? selectedColor : "#000"}
+                    />
+                  )}
+                </div>
+
               </div>
             </div>
 
@@ -697,46 +574,59 @@ const baseWidth = 700;
               {colorOptions.map(({ css, code }) => (
                 <div
                   key={code}
-                  className={`w-5 h-5 rounded-full cursor-pointer border border-white shadow ${css} ${
-                    selectedColor === code && selectedTemplate === Template.id ? "ring-2 ring-black" : ""
-                  }`}
+                  className={`w-5 h-5 rounded-full cursor-pointer border border-white shadow ${css} ${selectedColor === code && selectedTemplate === Template.id ? "ring-2 ring-black" : ""
+                    }`}
                   onClick={(e) => {
                     e.stopPropagation();
-                    setSelectedTemplate(Template.id);
-                    setSelectedColor(code);
+                    setColor(Template.id, code)
                   }}
                 />
               ))}
             </div>
+
           </div>
-        )) : <div className="w-full h-full flex justify-center overflow-auto hide-scrollbar">
-  <div
-    style={{
-      width: `${700 * 0.85}px`,      // Adjust scale here if needed
-      height: `${1100 * 0.85}px`,     // Height matches aspect ratio
-      overflow: "hidden",
-      position: "relative",
-    }}
-  >
-  <div
-    style={{
-      overflow: "auto", // Let it scroll if content is tall
-      transform: "scale(0.5)", // Scale it down to fit screen
-      transformOrigin: "top left",
-      width: "794px", // Base width (resume design width)
-    }}
-    ref={ref}
-  >
-    {findTemplate && (
-      <findTemplate.type
-        resume={resume}
-        accentColor={selectedTemplate === findTemplate.id ? selectedColor : "#000"}
-      />
-    )}
-  </div>
-  </div>
-</div>
-}
+        ))}
+        <SelectBar selected={selectedTemplate! > 0} selectedTemp={selectedTemplate} />
+
+      </div> :
+
+        <div
+          style={{
+            width: '100%',
+            overflow: "auto",
+          }}
+          className="flex justify-center"
+
+        >
+          <div
+            ref={ref}
+            style={{
+              width: "605px",
+              margin: "0px",
+              padding: "0px",
+              height: "1123px",
+              background: "white",
+              boxSizing: "border-box",
+            }}
+          >
+
+            {findTemplate ? (
+              <findTemplate.type
+
+                resume={resume}
+                accentColor={color}
+              />
+            ) : (
+              <p className="text-center text-gray-500 mt-10">
+                No template selected
+              </p>
+            )}
+          </div>
+        </div>
+
+
+      }
+
     </>
   );
 };

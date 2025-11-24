@@ -9,7 +9,7 @@ interface Phrase {
 }
 
 const phrases: Phrase[] = [
-    { text: 'Launch your career', image: 'eff1.png' },
+    { text: 'Launch your career', image: 'eff2.webp' },
   { text: 'Stand out instantly', image: 'eff2.png' },
   { text: 'Get hired faster', image: 'eff3.png' },
   { text: 'Show your best self', image: 'eff4.png' },

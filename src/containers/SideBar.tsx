@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { FileText, User, GraduationCap, Award, FileCheck, Settings, Check } from 'lucide-react';
+import { FileText, User, GraduationCap, Award, Settings, Check } from 'lucide-react';
+import { RootState } from '../Redux/store';
+import { useSelector } from 'react-redux';
+import { t } from 'i18next';
 
 interface Step {
   id: number;
@@ -18,7 +21,8 @@ const SideBar: React.FC<SidebarProps> = ({
 }) => {
   const [activeStep, setActiveStep] = useState(currentStep);
   const [percent, setPercent] = useState("20%");
-
+  const isDark = useSelector((state: RootState) => state.isDark.isDark);
+  const lang = useSelector((state : RootState)=> state.lang.lang)
 useEffect(() => {
   const path = window.location.pathname;
 
@@ -27,8 +31,7 @@ useEffect(() => {
     '/build-resume/work-history': 2,
     '/build-resume/add-educ': 3,
     '/build-resume/add-skills': 4,
-    '/build-resume/add-summary': 5,
-    '/build-resume/finalize': 6,
+    '/build-resume/finalize': 5,
   };
 
   const currentStep = stepMap[path] || 1;
@@ -36,9 +39,8 @@ useEffect(() => {
   const percentage: Record<string, string> = {
     '/build-resume/fill-data': "20%",
     '/build-resume/work-history': "45%",
-    '/build-resume/add-educ': "60%",
-    '/build-resume/add-skills': "75%",
-    '/build-resume/add-summary': "85%",
+    '/build-resume/add-educ': "65%",
+    '/build-resume/add-skills': "80%",
     '/build-resume/finalize': "95%",
 
   };
@@ -51,37 +53,32 @@ useEffect(() => {
   const steps: Step[] = [
     {
       id: 1,
-      title: 'Heading',
+      title: t('heading'),
       icon: <User size={16} />,
       completed: activeStep > 1
     },
     {
       id: 2,
-      title: 'Work history',
+      title: t('workHistory'),
       icon: <FileText size={16} />,
       completed: activeStep > 2
     },
     {
       id: 3,
-      title: 'Education',
+      title: t('education'),
       icon: <GraduationCap size={16} />,
       completed: activeStep > 3
     },
     {
       id: 4,
-      title: 'Skills',
+      title: t('skills'),
       icon: <Award size={16} />,
       completed: activeStep > 4
     },
+
     {
       id: 5,
-      title: 'Summary',
-      icon: <FileCheck size={16} />,
-      completed: activeStep > 5
-    },
-    {
-      id: 6,
-      title: 'Finalize',
+      title: t('finalize'),
       icon: <Settings size={16} />,
       completed: activeStep > 6
     }
@@ -89,111 +86,187 @@ useEffect(() => {
 
 
 
-  return (
-    <div className="w-60 h-screen fixed border-r border-gray-200 flex flex-col text-sm">
+return (
+      <div
+      className={`
+        fixed z-50 text-sm transition-all duration-300
+        flex flex-row lg:flex-col
+        w-full lg:w-60
+        lg:h-screen
+        top-0 ${lang === "en" ? "left-0" : ""}
+        border-b md:border-b-0 md:border-r
+        ${isDark ? "bg-gray-900 border-gray-700 text-white" : "bg-white border-gray-200 text-black"}
+      `}
+    >
       {/* Header */}
-      <div className="p-3 border-b border-gray-100">
-        <div className="flex justify-center items-center gap-3">
-         <img src="/logoBlack.png" className='mix-blend-multiply w-32' alt="" />
+      <div className={`p-3 lg:border-b lg:mb-5 ${isDark ? "lg:border-gray-700" : "lg:border-gray-100"}`}>
+        <div className="flex justify-center items-center gap-2">
+          <img
+            src={isDark ? "../../logoWhite.png" : "../../logoBlue.png"}
+            alt=""
+            className="w-10 md:w-14 lg:w-[60px]"
+          />
         </div>
       </div>
 
       {/* Steps */}
-      <div className="flex-1 px-6 pt-6">
-        <div className="space-y-0">
-  {steps.map((step , index) => {
-    const isActive = activeStep === step.id;
-     const isLastStep = index === steps.length - 1;
-     const isCompleted = activeStep > step.id;
-    return (
-      <div
-        key={step.id}
-        className={`relative z-10 flex  gap-3 px-5 group`}
-      >
-        {/* Circle */}
-     <div className="flex flex-col items-center ">
-        <div className={`w-6 h-6 rounded-full border-2  text-sm   font-bold flex items-center justify-center
-          ${isActive ? 'border-sky-600 text-sky-600' : 'border-gray-300 text-gray-500'}
-          ${isCompleted ? 'border-sky-600 text-sky-600 bg-sky-600' : 'bg-white border-gray-300 text-gray-500'}
-        `}>
-          {isCompleted ? <Check size={12} className="text-white" strokeWidth={4}/> : step.id}
-          
-        </div>
+      <div className="w-full md:w-full lg:block flex mx-10 lg:flex-col items-center">
+        {steps.map((step, index) => {
+          const isActive = activeStep === step.id;
+          const isLastStep = index === steps.length - 1;
+          const isCompleted = activeStep > step.id;
 
-        {/* Vertical dotted line */}
-      {!isLastStep && (
-  <div className={`h-8 border-l-2 ${isCompleted ? "border-sky-600" :"border-dashed"} border-gray-400 `}></div>
-)}
+          return (
+            <div key={step.id} className="flex-1 flex items-center lg:items-start group relative z-10">
+              <div className="flex w-full md:w-full lg:w-10 lg:flex-col items-center">
+                {/* Circle */}
+                <div
+                  className={`lg:w-5 lg:h-5 lg:p-0 p-1 w-5 rounded-full lg:border-2 text-xs font-bold flex items-center justify-center transition-all duration-200
+                    ${
+                      isActive
+                        ? "border-sky-600 text-sky-600 shadow-sm shadow-sky-100"
+                        : isDark
+                        ? "border-gray-600 text-white"
+                        : "border-gray-300 text-gray-500"
+                    }
+                    ${
+                      isCompleted
+                        ? "border-sky-600 text-white bg-sky-600 scale-110"
+                        : isDark
+                        ? "bg-gray-800"
+                        : "bg-white"
+                    }
+                  `}
+                >
+                  {isCompleted ? (
+                    <Check size={10} className="text-white" strokeWidth={4} />
+                  ) : (
+                    step.id
+                  )}
+                </div>
 
+                {/* Line */}
+                {!isLastStep && (
+                  <div
+                    className={`w-full lg:w-0 lg:h-10 border-t-2 lg:border-l-2 transition-colors duration-300
+                      ${
+                        isCompleted
+                          ? "border-sky-600 border-solid"
+                          : isDark
+                          ? "border-dashed border-gray-600"
+                          : "border-dashed border-gray-400"
+                      }
+                    `}
+                  ></div>
+                )}
+              </div>
+
+              {/* Title */}
+              <span
+                className={`hidden lg:block text-sm truncate transition-all duration-200
+                  ${
+                    isActive
+                      ? "font-bold text-sky-500"
+                      : isCompleted
+                      ? isDark
+                        ? "text-gray-300"
+                        : "text-gray-700"
+                      : isDark
+                      ? "text-gray-500"
+                      : "text-gray-600"
+                  }
+                `}
+              >
+                {step.title}
+              </span>
+            </div>
+          );
+        })}
       </div>
-  
-        {/* Title */}
-        <span
-          className={`text-sm truncate  ${
-            isActive
-              ? 'font-bold text-sky-900'
-              : isCompleted
-              ? 'text-gray-700'
-              : 'text-gray-600'
+
+      {/* Progress */}
+      <div className="p-3 mx-2 rounded-lg hidden lg:block">
+        <div className="flex items-center justify-between mb-3">
+          <span
+            className={`text-xs font-medium uppercase tracking-wide hidden md:block ${
+              isDark ? "text-gray-300" : "text-gray-700"
+            }`}
+          >
+            {t("resumeComplete")}:
+          </span>
+          <span
+            className={`md:hidden text-xs font-medium ${
+              isDark ? "text-gray-300" : "text-gray-700"
+            }`}
+          >
+            {percent}
+          </span>
+        </div>
+        <div className="relative flex items-center gap-2">
+          <div
+            className={`w-full rounded-full h-1 overflow-hidden ${
+              isDark ? "bg-gray-700" : "bg-gray-200"
+            }`}
+          >
+            <div
+              className="h-full bg-gradient-to-r from-sky-500 to-sky-600 rounded-full transition-all duration-500 ease-out shadow-sm"
+              style={{ width: `${percent}` }}
+            ></div>
+          </div>
+          <span className="hidden md:inline-block text-sm font-bold text-sky-500">
+            {percent}
+          </span>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div
+        className={`p-3 md:p-6 border-t space-y-2 hidden lg:block ${
+          isDark ? "border-gray-700" : "border-gray-100"
+        }`}
+      >
+        <div className="space-y-2">
+          {["Terms and Conditions", "Privacy Policy", "Accessibility", "Contact Us"].map((label, i) => (
+            <a
+              key={i}
+              href="#"
+              className={`block text-sm transition-colors duration-200 hover:underline ${
+                isDark ? "text-sky-400 hover:text-sky-300" : "text-sky-600 hover:text-sky-800"
+              }`}
+            >
+              {label}
+            </a>
+          ))}
+        </div>
+        <div
+          className={`pt-4 border-t text-center ${
+            isDark ? "border-gray-700" : "border-gray-100"
           }`}
         >
-          {step.title}
-        </span>
-        
-      </div>
-    );
-  })}
-</div>
-
-        </div>
-
-        {/* Progress Section */}
-        <div className="p-4 mx-1  rounded-lg">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-medium text-gray-700 uppercase tracking-wide">
-              Resume Completeness:
-            </span>
-          </div>
-          
-          <div className="relative flex items-center gap-2">
-            <div className="w-full bg-gray-200 rounded-full h-1 overflow-hidden">
-              <div 
-                className="h-full bg-gradient-to-r from-sky-500 to-sky-600 rounded-full transition-all duration-500 ease-out"
-                style={{ width: `${percent}` }}
-              />
-            </div>
-            <div className="flex justify-between items-center">
-              <div className="text-right">
-                <span className="text-sm font-bold text-sky-600">
-                  {percent}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-     
-      <div className="p-6 border-t border-gray-100 space-y-3">
-        <a href="#" className="block text-sm text-sky-600 hover:text-sky-800 transition-colors">
-          Terms and Conditions
-        </a>
-        <a href="#" className="block text-sm text-sky-600 hover:text-sky-800 transition-colors">
-          Privacy Policy
-        </a>
-        <a href="#" className="block text-sm text-sky-600 hover:text-sky-800 transition-colors">
-          Accessibility
-        </a>
-        <a href="#" className="block text-sm text-sky-600 hover:text-sky-800 transition-colors">
-          Contact Us
-        </a>
-        
-        <div className="pt-4 border-t border-gray-100">
-          <p className="text-xs text-gray-500">
-            © 2025, Mattlob Limited. All rights reserved.
+          <p className={`text-xs ${isDark ? "text-gray-500" : "text-gray-500"}`}>
+            {t("© 2025 CV Shop Limited. All rights reserved.")}
           </p>
         </div>
       </div>
+
+      {/* Compact Footer */}
+      <div className="p-2 flex flex-col items-center space-y-1 hidden">
+        {[
+          { title: "Terms", iconPath: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586..." },
+          { title: "Contact", iconPath: "M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0..." },
+        ].map((link, i) => (
+          <a
+            key={i}
+            href="#"
+            className={`transition-colors duration-200 ${
+              isDark ? "text-sky-400 hover:text-sky-300" : "text-sky-600 hover:text-sky-800"
+            }`}
+            title={link.title}
+          ></a>
+        ))}
+      </div>
     </div>
-  );
+);
 }
 
 export default SideBar;

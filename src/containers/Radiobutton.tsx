@@ -12,7 +12,7 @@ interface RadioButtonProps {
 
 const RadioButton: React.FC<RadioButtonProps> = ({ id, name, value, checked, onChange, label }) => {
   return (
-    <div className="flex items-center mb-4 mt-4">
+    <div className="flex items-center">
       <input
         id={id}
         type="radio"

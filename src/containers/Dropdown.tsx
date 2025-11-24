@@ -128,7 +128,7 @@
 //                         onClick={onClickC}
 //                         className="font-semibold text-xs  block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-300 dark:text-black dark:hover:text-black"
 //                     >
-//                         Sign out<span className='fa fa-right-from-bracket p-1 text-blue-400 float-right'></span>
+//                         {t("signOut")}<span className='fa fa-right-from-bracket p-1 text-blue-400 float-right'></span>
 //                     </link>  }
 //                 </div>
 //             </div>

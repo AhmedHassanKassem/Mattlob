@@ -1,6 +1,7 @@
 
 
 import React, { ReactNode, forwardRef } from 'react';
+import { t } from 'i18next';
 
 interface SelectProps {
   className?: string;
@@ -42,7 +43,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(({
 }, ref) => {
 return (
   <div className="w-full">
-    <div className={labelDivClassname || "mb-1 h-[1.5rem]"}>
+    <div className={labelDivClassname || "h-[1.5rem]"}>
       {label && (
         <label htmlFor={forSelectLabel} className={labelClassname}>
           {label}
@@ -57,11 +58,11 @@ return (
       onChange={onChange}
       className={
         className ||
-        'w-full border rounded px-2.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
+        'w-full border border-gray-300 rounded px-2.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
       }
       ref={ref}
     >
-      <option value="">{forSelect || 'Choose'}</option>
+      <option value="">{forSelect || t('Choose')}</option>
       {oneValue || (
         <>
           {value1 && <option value={value1}>{value1}</option>}

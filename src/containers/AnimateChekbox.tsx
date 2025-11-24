@@ -22,7 +22,7 @@ interface CheckboxProps {
   borderColor?: string; // Border color
 }
 
-const CheckboxDemo = forwardRef<HTMLInputElement, CheckboxProps>(({
+const CheckboxAdvanced = forwardRef<HTMLInputElement, CheckboxProps>(({
 
   className,
   checked = false,
@@ -136,6 +136,6 @@ const CheckboxDemo = forwardRef<HTMLInputElement, CheckboxProps>(({
   );
 });
 
-CheckboxDemo.displayName = 'CheckBoxInput';
+CheckboxAdvanced.displayName = 'CheckBoxInput';
 
-export default CheckboxDemo;
+export default CheckboxAdvanced;
