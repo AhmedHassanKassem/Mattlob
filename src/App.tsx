@@ -227,7 +227,6 @@ useEffect(() => {
   const supportedLangs = ["en", "ar"];
   const url = new URL(window.location.href);
   let lang = url.searchParams.get("lang");
-  let resumeLang = localStorage.getItem('resumeLang');
 
   if (!lang) {
     const storedLang = localStorage.getItem("lang");
@@ -245,22 +244,12 @@ useEffect(() => {
   dispatch(setLangSlice(lang));
 
   i18n.changeLanguage(lang);
-  if(path.includes('/build-resume')){
-    document.documentElement.lang = resumeLang!;
-  document.documentElement.dir = resumeLang === "ar" ? "rtl" : "ltr";
-  }else{
-    document.documentElement.lang = lang;
-  document.documentElement.dir = lang === "ar" ? "rtl" : "ltr"; 
-  }
- 
+  
+  document.documentElement.lang = lang;
+  document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
 
   document.body.classList.remove("en", "ar");
-
-if (path.includes("/build-resume")) {
-  document.body.classList.add(resumeLang!);
-} else {
   document.body.classList.add(lang);
-}
 
   // ★★★ اللودينج يطفي هنا فقط ★★★
   setLoading(false);

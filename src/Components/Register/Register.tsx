@@ -34,7 +34,7 @@ const Register = () => {
     formState: { errors },
   } = useForm<ICandidateRegister>()
 
-
+  
   const getRoles = async()=>{
    await axiosInst.get('/api/Common/GetAllRoles').then((res)=>{
     const filteredRoles = res.data.data.filter((filteredRole : IRole)=> filteredRole.is_active === true)
@@ -89,25 +89,28 @@ const Register = () => {
   };
 
 
-  const signInWithLinked = () => {
-    try {
-      const host = window.location.host
-      const linkedInUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=864irqylqi4oka&redirect_uri=http://${host}&scope=openid%20profile%20email&state=linkedin`;
-      window.location.href = linkedInUrl
-    } catch (error) {
-      console.log(error);
-    }
+const signInWithLinked = ()=>{
+  try {
+  const host = "https://mattlob.com"
+  const clientId = '864irqylqi4oka';
+  const redirectUri = host;
+  const scope = 'email profile openid';
+  const responseType = 'code';
+  const linkedInUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=${responseType}&client_id=${clientId}&redirect_uri=${redirectUri}&scope=${encodeURIComponent(scope)}&state=linkedin`;
+  window.location.href = linkedInUrl    
+  } catch (error) {
+    console.log(error);   
   }
-  const signInWithGoogle = () => {
-    const host = window.location.host
-    const clientId = '967275738944-dmo8h43tpupar5aq6kjht57vmn6l951i.apps.googleusercontent.com';
-    const redirectUri = `http://${host}`;
-    const scope = 'email profile openid';
-    const responseType = 'code';
-    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=${responseType}&scope=${encodeURIComponent(scope)}&access_type=offline&prompt=consent&state=google`;
-    window.location.href = googleAuthUrl;
-  };
-
+}
+const signInWithGoogle = () => {
+   const host = "https://mattlob.com"
+  const clientId = '967275738944-dmo8h43tpupar5aq6kjht57vmn6l951i.apps.googleusercontent.com';
+  const redirectUri = host; 
+  const scope = 'email profile openid';
+  const responseType = 'code';
+  const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=${responseType}&scope=${encodeURIComponent(scope)}&access_type=offline&prompt=consent&state=google`;
+  window.location.href = googleAuthUrl;
+};
   useEffect(() => {
     getRoles()
   }, [])

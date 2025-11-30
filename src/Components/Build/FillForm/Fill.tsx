@@ -32,7 +32,7 @@ const Fill = () => {
   // const [resumeImage, setResumeImage] = useState<IImage>();
   const [showPreview, setShowPreview] = useState(false)
   const isDark = useSelector((state: RootState) => state.isDark.isDark)
-  const lang = useSelector((state: RootState) => state.resumeLang.resumeLang)
+  const lang = useSelector((state: RootState) => state.lang.lang)
 
   const [addLangs, setAddLangs] = useState<ILanguage>({
     language: '',
@@ -69,13 +69,13 @@ const Fill = () => {
 
   const getProficiencyColor = (proficiency: string) => {
     switch (proficiency) {
-      case t('Native' , {lng : lang}):
+      case t('Native'):
         return 'bg-emerald-100 text-emerald-800 border-emerald-200';
-      case t('Fluent' , {lng : lang}):
+      case t('Fluent'):
         return 'bg-blue-100 text-blue-800 border-blue-200';
-      case t('Intermediate' , {lng : lang}):
+      case t('Intermediate'):
         return 'bg-amber-100 text-amber-800 border-amber-200';
-      case t('Beginner' , {lng : lang}):
+      case t('Beginner'):
         return 'bg-rose-100 text-rose-800 border-rose-200';
       default:
         return 'bg-gray-100 text-gray-800 border-gray-200';
@@ -83,10 +83,10 @@ const Fill = () => {
   };
   const getProficiencyIcon = (proficiency: string) => {
     const level = proficiency;
-    if (level === t('Native' , {lng : lang})) return '★★★★★';
-    if (level === t('Fluent' , {lng : lang})) return '★★★★☆';
-    if (level === t('Intermediate' , {lng : lang})) return '★★★☆☆';
-    if (level === t('Beginner' , {lng : lang})) return '★★☆☆☆';
+    if (level === t('Native')) return '★★★★★';
+    if (level === t('Fluent')) return '★★★★☆';
+    if (level === t('Intermediate')) return '★★★☆☆';
+    if (level === t('Beginner')) return '★★☆☆☆';
     return '★☆☆☆☆';
   };
 
@@ -209,16 +209,16 @@ const Fill = () => {
 
 
 
-  const Marital = [t("Married" , {lng : lang}), t("Single" , {lng : lang}), t("Divorced" , {lng : lang}), t("Widowed")]
-  const Military = [t("Completed" , {lng : lang}), t("Not Completed" , {lng : lang}), t("Exempt" , {lng : lang}), t("Postponed" , {lng : lang}), t("Currently Serving")]
-  const langProfs = [t("Beginner" , {lng : lang}), t("Intermediate" , {lng : lang}), t("Fluent" , {lng : lang}), t("Native")]
+  const Marital = [t("Married"), t("Single"), t("Divorced"), t("Widowed")]
+  const Military = [t("Completed"), t("Not Completed"), t("Exempt"), t("Postponed"), t("Currently Serving")]
+  const langProfs = [t("Beginner"), t("Intermediate"), t("Fluent"), t("Native")]
   const languages = [
-    t("English" , {lng : lang}),
-    t("Arabic" , {lng : lang}),
-    t("French" , {lng : lang}),
-    t("Chinese" , {lng : lang}),
-    t("Japanese" , {lng : lang}),
-    t("Dutch" , {lng : lang}),
+    t("English"),
+    t("Arabic"),
+    t("French"),
+    t("Chinese"),
+    t("Japanese"),
+    t("Dutch"),
   ];
 
   const [summaryError, setSummaryError] = useState(false);
@@ -347,7 +347,7 @@ const Fill = () => {
         const year = parseInt(value.toString().slice(0, 4));
 
         if (isNaN(year) || year > 2008) {
-          newErrors[key] = t("Invalid dob" , {lng : lang});
+          newErrors[key] = t("Invalid dob");
         }
       }
 
@@ -541,16 +541,16 @@ const Fill = () => {
                 className={`lg:text-4xl font-bold mb-1 ${isDark ? "text-white" : "text-sky-700"
                   }`}
               >
-                {t("Start filling your data" , {lng : lang})}
+                {t("Start filling your data")}
               </h1>
               <p
                 className={`lg:text-sm text-xs lg:w-full w-45 ${isDark ? "text-gray-300" : "text-gray-600 text-sky-700"
                   }`}
               >
-                {t("Enter your data below to make your resume more reachable..." , {lng : lang})}
+                {t("Enter your data below to make your resume more reachable...")}
               </p>
               <p className="text-xs text-red-500 pt-6">
-                {t("* these fields are mandatory" , {lng : lang})}
+                {t("* these fields are mandatory")}
               </p>
             </div>
             <div>
@@ -564,7 +564,7 @@ const Fill = () => {
                       }`}
                   >
                     <LogOut size={18} />
-                    <p>{t("signOut" , {lng : lang})} </p>
+                    <p>{t("signOut")} </p>
                   </div>
                 }
               />
@@ -578,7 +578,7 @@ const Fill = () => {
                   ? "border-gray-700 bg-gray-800 text-white"
                   : "border-gray-300 bg-white text-black"
                   }`}
-                label={t("Full name" , {lng : lang})}
+                label={t("Full name")}
                 onChange={(e) => handleChange("full_name", e.target.value)}
                 errorMessage={errors.full_name}
                 value={resumeData?.full_name}
@@ -587,8 +587,7 @@ const Fill = () => {
 
             <div className="lg:col-span-4 col-span-12">
               <Select
-                label={t("Select Country" , {lng : lang})}
-                forSelect={t("Choose" , {lng : lang})}
+                label={t("Select Country")}
                 onChange={(e) => handleChangeCountry("country", Number(e.target.value))}
                 errorMessage={errors.country}
                 value={resumeData.country?.id}
@@ -612,10 +611,9 @@ const Fill = () => {
             </div>
             <div className="lg:col-span-4 col-span-12">
               <Select
-                label={t("Select City" , {lng : lang})}
+                label={t("Select City")}
                 onChange={(e) => handleChangeCity("city", Number(e.target.value))}
                 errorMessage={errors.city}
-                forSelect={t("Choose" , {lng : lang})}
                 value={resumeData.city?.id}
                 oneValue={
                   <>
@@ -637,8 +635,7 @@ const Fill = () => {
             </div>
             <div className="lg:col-span-4 col-span-12">
               <Select
-                label={t("Province" , {lng : lang})}
-                forSelect={t("Choose" , {lng : lang})}
+                label={t("Province")}
                 onChange={(e) => handleChangeProvince("province", Number(e.target.value))}
                 errorMessage={errors.province}
                 value={resumeData.province?.id}
@@ -662,8 +659,7 @@ const Fill = () => {
             </div>
             <div className="lg:col-span-4 col-span-12">
               <Select
-                label={t("Village" , {lng : lang})}
-                forSelect={t("Choose" , {lng : lang})}
+                label={t("Village")}
                 onChange={(e) => handleChangeVillage("village", Number(e.target.value))}
                 errorMessage={errors.village}
                 oneValue={
@@ -690,14 +686,14 @@ const Fill = () => {
                   ? "border-gray-700 bg-gray-800 text-white"
                   : "border-gray-300 bg-white text-black"
                   }`}
-                label={t("Additional address info" , {lng : lang})}
+                label={t("Additional address info")}
                 onChange={(e) => handleChange("address_info", e.target.value)}
                 errorMessage={errors.address_info}
                 value={resumeData?.address_info}
               />
             </div>
 
-            <div className="lg:col-span-4 col-span-12"> <label htmlFor="phone">{t("Phone" , {lng : lang})}</label>
+            <div className="lg:col-span-4 col-span-12"> <label htmlFor="phone">{t("Phone")}</label>
               <div dir={"ltr"} className="w-full">
 
                 <PhoneInput
@@ -747,7 +743,7 @@ const Fill = () => {
                 onChange={(e) => handleChange("email", e.target.value)}
                 errorMessage={errors.email}
                 value={resumeData?.email}
-                label={t("Email" , {lng : lang})}
+                label={t("Email")}
               />
             </div>
             <div className="lg:col-span-4 col-span-12">
@@ -760,14 +756,13 @@ const Fill = () => {
                 errorMessage={errors.birth_date}
                 value={resumeData?.birth_date}
                 type="date"
-                label={t("Date of birth" , {lng : lang})}
+                label={t("Date of birth")}
               />
             </div>
 
             <div className="lg:col-span-4 col-span-12">
               <Select
-                label={t("Marital status" , {lng : lang})}
-                forSelect={t("Choose" , {lng : lang})}
+                label={t("Marital status")}
                 onChange={(e) => handleChange("marital_status", e.target.value)}
                 errorMessage={errors.marital_status}
                 value={resumeData?.marital_status}
@@ -803,8 +798,7 @@ const Fill = () => {
 
             <div className="lg:col-span-4 col-span-12">
               <Select
-                label={t("Military status" , {lng : lang})}
-                forSelect={t("Choose" , {lng : lang})}
+                label={t("Military status")}
                 onChange={(e) => handleChange("military_status", e.target.value)}
                 errorMessage={errors.military_status}
                 value={resumeData?.military_status}
@@ -829,7 +823,7 @@ const Fill = () => {
                   className={`block text-sm font-medium mb-2 ${isDark ? "text-gray-300" : "text-gray-700"
                     }`}
                 >
-                  {t("Objective or summary" , {lng : lang})}
+                  {t("Objective or summary")}
                 </label>
                 <textarea
                   name="summary"
@@ -838,12 +832,12 @@ const Fill = () => {
                     ? "border-gray-700 bg-gray-800 text-white"
                     : "border-gray-400 bg-white text-black"
                     }`}
-                  placeholder={t("Write a brief summary about yourself..." , {lng : lang})}
+                  placeholder={t("Write a brief summary about yourself...")}
                   value={resumeData?.summary}
                 />
                 {summaryError && (
                   <p className="text-sm text-red-500 mt-1">
-                    {t("Summary must contain at least 200 letters." , {lng : lang})}
+                    {t("Summary must contain at least 200 letters.")}
                   </p>
                 )}
               </div>
@@ -851,7 +845,6 @@ const Fill = () => {
             <div className="lg:col-span-5 col-span-12">
               <Select
                 label={t("Select languages")}
-                forSelect={t("Choose" , {lng : lang})}
                 onChange={(e) => handleChangeLang("language", e.target.value)}
                 errorMessage={langErrors.language}
                 value={addLangs.language}
@@ -870,8 +863,7 @@ const Fill = () => {
             </div>
             <div className="lg:col-span-5 col-span-12">
               <Select
-                label={t("Language proficiency" , {lng : lang})}
-                forSelect={t("Choose" , {lng : lang})}
+                label={t("Language proficiency")}
                 onChange={(e) => handleChangeLang("proficiency", e.target.value)}
                 errorMessage={langErrors.proficiency}
                 value={addLangs.proficiency}
@@ -1027,7 +1019,7 @@ const Fill = () => {
                 btnTitle="Go Previous"
                 buttonContent={<div className="text-sm flex items-center justify-center w-20">
                   {lang === "en" ? <ChevronLeft size={17} /> : <ChevronRight size={17} />}
-                  <p className="text-sm">{t("Previous" , {lng : lang})}</p>
+                  <p className="text-sm">{t("Previous")}</p>
                 </div>}
               />{" "}
               <Button
@@ -1035,14 +1027,13 @@ const Fill = () => {
                 btnTitle="Show Preview"
                 className={`rounded-md p-2 transition-all duration-300 border shadow-sm hover:shadow-md hover:bg-sky-100 ${isDark ? "text-white border-white shadow-white" : "border-sky-200 text-sky-600"
                   }`}
-                buttonContent={<div className="flex items-center w-32 justify-center gap-1"><Eye />
-                 <p className="text-sm">{t("Preview" , {lng : lang})}</p></div>}
+                buttonContent={<div className="flex items-center w-32 justify-center gap-1"><Eye /> <p className="text-sm">{t("Preview")}</p></div>}
               />
               <Button
                 onClick={handleNext}
                 btnTitle="Go Next"
                 buttonContent={<div className="text-sm flex items-center justify-center w-20">
-                  <p className="text-sm">{t("Next" , {lng : lang})}</p>
+                  <p className="text-sm">{t("Next")}</p>
                   {lang === "en" ? <ChevronRight size={17} /> : <ChevronLeft size={17} />}
                 </div>}
                 className={`rounded-md p-2 transition-all duration-300 border shadow-sm hover:shadow-md hover:bg-sky-100 ${isDark ? "text-white border-white shadow-white" : "border-sky-200 text-sky-600"

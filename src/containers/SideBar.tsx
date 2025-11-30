@@ -23,7 +23,7 @@ const SideBar: React.FC<SidebarProps> = ({
   const [activeStep, setActiveStep] = useState(currentStep);
   const [percent, setPercent] = useState("20%");
   const isDark = useSelector((state: RootState) => state.isDark.isDark);
-  const lang = useSelector((state : RootState)=> state.resumeLang.resumeLang)
+  const lang = useSelector((state : RootState)=> state.lang.lang)
 
 useEffect(() => {
   const path = window.location.pathname;
@@ -56,42 +56,42 @@ useEffect(() => {
   const steps: Step[] = [
     {
       id: 1,
-      title: t('heading' , {lng : lang}),
+      title: t('heading'),
       link : '/build-resume/fill-data',
       icon: <User size={16} />,
       completed: activeStep > 1
     },
     {
       id: 2,
-      title: t('workHistory' , {lng : lang}),
+      title: t('workHistory'),
       link : '/build-resume/work-history',
       icon: <FileText size={16} />,
       completed: activeStep > 2
     },
     {
       id: 3,
-      title: t('education' , {lng : lang}),
+      title: t('education'),
       link : '/build-resume/add-educ',
       icon: <GraduationCap size={16} />,
       completed: activeStep > 3
     },
     {
       id: 4,
-      title: t('skills' , {lng : lang}),
+      title: t('skills'),
       link : '/build-resume/add-skills',
       icon: <Award size={16} />,
       completed: activeStep > 4
     },
   {
       id: 5,
-      title: t('links' , {lng : lang}),
+      title: t('links'),
       link : '/build-resume/add-links',
       icon: <Download size={16} />,
       completed: activeStep > 6
     },
     {
       id: 6,
-      title: t('finalize' , {lng : lang}),
+      title: t('finalize'),
       link : '/build-resume/pdf-download',
       icon: <Settings size={16} />,
       completed: activeStep > 6
@@ -208,7 +208,7 @@ return (
               isDark ? "text-gray-300" : "text-gray-700"
             }`}
           >
-            {t("resumeComplete" , {lng : lang})}:
+            {t("resumeComplete")}:
           </span>
           <span
             className={`md:hidden text-xs font-medium ${
@@ -250,7 +250,7 @@ return (
                 isDark ? "text-sky-400 hover:text-sky-300" : "text-sky-600 hover:text-sky-800"
               }`}
             >
-              {t(label , {lng : lang})}
+              {t(label)}
             </a>
           ))}
         </div>
@@ -260,7 +260,7 @@ return (
           }`}
         >
           <p className={`text-xs ${isDark ? "text-gray-500" : "text-gray-500"}`}>
-            {t("© 2025 CV Shop Limited. All rights reserved." , {lng : lang})}
+            {t("© 2025 CV Shop Limited. All rights reserved.")}
           </p>
         </div>
       </div>
