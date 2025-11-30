@@ -576,7 +576,7 @@ const Courses: FC<coursesProps> = ({ lang }) => {
                         {t("Country")}:
                       </span>
                       <span className="inline-flex items-center px-2.5 mx-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200">
-                        🌍 {cour.country.en_name + ", " + cour.city.en_name}
+                        🌍 {lang === 'en' ? cour.city.en_name : cour.city.ar_name}, {lang === 'en' ? cour.country.en_name : cour.country.ar_name}
                       </span>
                     </p>
                   </div>

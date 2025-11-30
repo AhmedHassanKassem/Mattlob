@@ -16,7 +16,7 @@ const MyCvs = () => {
     const cvsLoading = useSelector((state: RootState) => state.cvData.loading);
     const token = useSelector((state: RootState) => state.token.token);
     const navigate = useNavigate()
-    const {t} = useTranslation()
+    const { t } = useTranslation()
     const dispatch: AppDispatch = useDispatch()
     useEffect(() => {
         dispatch(getCvDataAction(token))
@@ -29,7 +29,7 @@ const MyCvs = () => {
             return {};
         }
     };
-   
+
 
     const getTempById = (tempId: number) => {
         const findTemp = cvData.find((temp: any) => temp.temp_id == tempId)
@@ -57,13 +57,13 @@ const MyCvs = () => {
                 skills: skills || [],
                 languages: languages || [],
                 education: education || [],
-                courses : courses || [],
+                courses: courses || [],
                 image: image || null,
-                personal_Links : links || []
-                
+                personal_Links: links || []
+
             };
-           console.log(cvData);
-           
+            console.log(cvData);
+
             localStorage.setItem("resumeData", JSON.stringify(fullResume))
             if (findTemp.color !== null && findTemp.color !== undefined) {
                 localStorage.setItem("color", findTemp.color);
@@ -84,15 +84,15 @@ const MyCvs = () => {
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-10">
             {cvsLoading ? <div className="flex justify-center items-center min-h-screen">
                 <SquareLoader color="#5275c2ff" size={45} />
-            </div> : cvData.length == 0 ?<div className="flex justify-center items-center min-h-screen bg-gray-50">
-  <div className="flex flex-col items-center gap-4 text-center">
-    <p className="font-bold text-2xl text-gray-800">{t("You don't have any added resumes yet")}</p>
-    <FileWarning size={96} className="text-sky-500 animate-pulse mb-5" />
-    <Button title="Go back" onClick={()=>navigate(-1)} titleClassname="bg-indigo-600 text-white p-5 rounded-4xl hover:shadow-lg  transition-all duration-400 shadow-indigo-300"/>
-  </div>
-</div>
+            </div> : cvData.length == 0 ? <div className="flex justify-center items-center min-h-screen bg-gray-50">
+                <div className="flex flex-col items-center gap-4 text-center">
+                    <p className="font-bold text-2xl text-gray-800">{t("You don't have any added resumes yet")}</p>
+                    <FileWarning size={96} className="text-sky-500 animate-pulse mb-5" />
+                    <Button title="Go back" onClick={() => navigate(-1)} titleClassname="bg-indigo-600 text-white p-5 rounded-4xl hover:shadow-lg  transition-all duration-400 shadow-indigo-300" />
+                </div>
+            </div>
 
-                      
+
                 : <div className="max-w-7xl mx-auto">
                     <div className="text-center mb-12">
                         <h1 className="text-4xl font-bold text-gray-800 mb-4">{t("Your CV Collection")}</h1>
@@ -122,7 +122,7 @@ const MyCvs = () => {
                                 {/* <div className="bg-gradient-to-r from-blue-500 to-purple-600 h-1"></div> */}
 
                                 {/* Hover Action Buttons */}
-                                <div className="sticky  scrollbar-hide top-4  left-4 pl-4 opacity-0 group-hover:opacity-100 transition-all duration-300 transform  group-hover:translate-y-0 z-10">
+                                <div className="sticky  scrollbar-hide top-4  left-4 pl-4 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all duration-300 transform  group-hover:translate-y-0 z-10">
                                     <div className="flex space-x-2">
                                         <button onClick={() => getTempById(temps.temp_id)} className="bg-white/90 hover:bg-blue-500 hover:text-white text-blue-600 p-2 rounded-full shadow-lg transition-all duration-200 backdrop-blur-sm">
                                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -104,7 +104,7 @@ const VerifyEmail = () => {
                     user_id: decoded.user_id,
                 };
                 dispatch(setFoundUser(user));
-                localStorage.removeItem('email')
+                
                 setInterval(() => {
                     navigate('/home')
                 }, 3000);

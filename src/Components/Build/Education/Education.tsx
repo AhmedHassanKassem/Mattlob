@@ -15,6 +15,7 @@ import Courses from "../Courses/Courses"
 import { t } from "i18next"
 import RadioButton from "../../../Containers/Radiobutton"
 import { BounceLoader } from "react-spinners"
+import { removeCookie } from "../../../Utils/cookies"
 
 const Education = () => {
   const navigate = useNavigate()
@@ -339,9 +340,7 @@ if (
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('email')
-    localStorage.removeItem('user')
-    localStorage.removeItem('token')
+    removeCookie('token')
     dispatch(clearFoundUser());
     navigate('/login')
   }
@@ -351,6 +350,10 @@ if (
   useEffect(() => {
     getAllEduLevels();
     getAllEduTypes()
+    const tab = localStorage.getItem('tabSelected')
+    if(tab){
+      selectTab(tab)
+    }
   }, []);
 
 
@@ -469,7 +472,7 @@ if (
   };
   useEffect(() => {
     const getSelectedTab = localStorage.getItem("tabSelected")
-    if (getSelectedTab !== "") {
+    if (getSelectedTab === "") {
       selectTab(getSelectedTab!)
     }
     getCountries();
@@ -925,7 +928,7 @@ if (
                                 {t("Field of study")}:
                               </span>
                               <span className="inline-flex items-center px-3 mx-3 py-1 rounded-full text-sm font-medium bg-blue-50 text-blue-700 border border-blue-200">
-                                {edu.edu_level === "1" ? edu.college.en_name : edu.edu_level === "2" ? edu.institute?.en_name! : edu.college?.en_name!}
+                                {edu.edu_level === "1" ? lang === 'en' ? edu.college.en_name : edu.college.ar_name : edu.edu_level === "2" ? edu.institute?.en_name! : edu.college?.en_name!}
                               </span>
                             </p>
                           </div>
@@ -942,7 +945,7 @@ if (
                                 {t("Specialty")}:
                               </span>
                               <span className="inline-flex items-center px-3 mx-3 py-1 rounded-full text-sm font-medium bg-blue-50 text-blue-700 border border-blue-200">
-                                {edu.specialty.en_name}
+                                {lang === 'en' ? edu.specialty.en_name : edu.specialty.ar_name}
                               </span>
                             </p>
                           </div>
@@ -959,7 +962,7 @@ if (
                                 {t("University")}:
                               </span>
                               <span className="inline-flex items-center px-3 mx-3 py-1 rounded-full text-sm font-medium bg-blue-50 text-blue-700 border border-blue-200">
-                                {edu.university.en_name}
+                                {lang === 'en' ? edu.university.en_name : edu.university.ar_name}
                               </span>
                             </p>
                           </div>}
@@ -977,7 +980,7 @@ if (
                                 {t("Location")}:
                               </span>
                               <span className="inline-flex items-center px-2.5 mx-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200">
-                                📍 {edu.country.en_name}, {edu.city.en_name}
+                                📍{lang === 'en' ? edu.city.en_name : edu.city.ar_name}, {lang === 'en' ? edu.country.en_name : edu.country.ar_name}
                               </span>
                             </p>
                           </div>
@@ -1079,35 +1082,41 @@ if (
             }`}
         >
           <div className="flex justify-center lg:justify-end">
-            <div className="flex lg:gap-5 gap-15 text-lg font-bold">
+            <div className="flex lg:gap-5 gap-10 text-lg font-bold">
               <Button
-                className={`rounded-full p-2 border transition-all duration-300 shadow-sm hover:shadow-md ${isDark
+                className={`rounded-md p-2 border transition-all duration-300 shadow-sm hover:shadow-md hover:bg-sky-100 ${isDark
                   ? "text-white border-white shadow-white"
                   : "text-sky-600 border-sky-200 shadow-sky-300"
                   }`}
                 onClick={() => navigate(-1)}
                 btnTitle="Go Previous"
-                buttonContent={lang === "en" ? <ChevronLeft /> : <ChevronRight />}
+                buttonContent={<div className="text-sm flex items-center justify-center w-20">    
+                {lang === "en" ? <ChevronLeft size={17} /> : <ChevronRight size={17} />}
+                <p className="text-sm">{t("Previous")}</p>
+                </div>}
               />
 
               <Button
                 onClick={() => setShowPreview(true)}
                 btnTitle="Show Preview"
-                className={`rounded-full p-2 border transition-all duration-300 shadow-sm hover:shadow-md ${isDark
+                className={`rounded-md p-2 border transition-all duration-300 shadow-sm hover:shadow-md hover:bg-sky-100 ${isDark
                   ? "text-white border-white shadow-white"
                   : "text-sky-600 border-sky-200 shadow-sky-300"
                   }`}
-                buttonContent={<Eye />}
+                buttonContent={<div className="flex items-center w-32 justify-center gap-1"><Eye /> <p className="text-sm">{t("Preview")}</p></div>}
               />
 
               <Button
                 onClick={handleNext}
                 btnTitle="Go Next"
-                className={`rounded-full p-2 border transition-all duration-300 shadow-sm hover:shadow-md ${isDark
+                className={`rounded-md p-2 transition-all border duration-300 shadow-sm hover:shadow-md hover:bg-sky-100 ${isDark
                   ? "text-white border-white shadow-white"
                   : "text-sky-600 border-sky-200 shadow-sky-300"
                   }`}
-                buttonContent={lang === "en" ? <ChevronRight /> : <ChevronLeft />}
+                buttonContent={<div className="text-sm flex items-center justify-center w-20">
+                <p className="text-sm">{t("Next")}</p>
+                {lang === "en" ? <ChevronRight size={17} /> : <ChevronLeft size={17} />}
+                </div>}
               />
             </div>
           </div>

@@ -13,6 +13,7 @@ import { AppDispatch, RootState } from "../../../Redux/store";
 import { getSkillsAction } from "../../../Redux/Skills/skillsAction";
 import { clearFoundUser } from "../../../Redux/Slices/userSlice";
 import { useTranslation } from "react-i18next";
+import { removeCookie } from "../../../Utils/cookies";
 
 const Skills = () => {
   const {t} = useTranslation()
@@ -108,15 +109,13 @@ const isDark = useSelector((state : RootState)=> state.isDark.isDark)
         }
       })
       if (res.status === 200) {
-        navigate('/build-resume/finalize')
+        navigate('/build-resume/add-links')
       }
     }
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('email')
-    localStorage.removeItem('user')
-    localStorage.removeItem('token')
+    removeCookie('token')
     dispatch(clearFoundUser());
     navigate('/login')
   }
@@ -293,38 +292,41 @@ const isDark = useSelector((state : RootState)=> state.isDark.isDark)
           }`}
         >
           <div className="flex justify-center lg:justify-end">
-            <div className="flex lg:gap-5 gap-15 text-lg font-bold">
+            <div className="flex lg:gap-5 gap-10 text-lg font-bold">
               <Button
-                className={`rounded-full p-2 border transition-all duration-300 shadow-sm hover:shadow-md ${
-                  isDark
-                    ? "text-white border-white shadow-white"
-                    : "text-sky-600 border-sky-200 shadow-sky-300"
-                }`}
+                className={`rounded-md p-2 border transition-all duration-300 shadow-sm hover:shadow-md hover:bg-sky-100 ${isDark
+                  ? "text-white border-white shadow-white"
+                  : "text-sky-600 border-sky-200 shadow-sky-300"
+                  }`}
                 onClick={() => navigate(-1)}
                 btnTitle="Go Previous"
-                buttonContent={lang === "en" ? <ChevronLeft/> : <ChevronRight />}
+                buttonContent={<div className="text-sm flex items-center justify-center w-20">    
+                {lang === "en" ? <ChevronLeft size={17} /> : <ChevronRight size={17} />}
+                <p className="text-sm">{t("Previous")}</p>
+                </div>}
               />
 
               <Button
                 onClick={() => setShowPreview(true)}
                 btnTitle="Show Preview"
-                className={`rounded-full p-2 border transition-all duration-300 shadow-sm hover:shadow-md ${
-                  isDark
-                    ? "text-white border-white shadow-white"
-                    : "text-sky-600 border-sky-200 shadow-sky-300"
-                }`}
-                buttonContent={<Eye />}
+                className={`rounded-md p-2 border transition-all duration-300 shadow-sm hover:shadow-md hover:bg-sky-100 ${isDark
+                  ? "text-white border-white shadow-white"
+                  : "text-sky-600 border-sky-200 shadow-sky-300"
+                  }`}
+                buttonContent={<div className="flex items-center w-32 justify-center gap-1"><Eye /> <p className="text-sm">{t("Preview")}</p></div>}
               />
 
               <Button
                 onClick={handleNext}
                 btnTitle="Go Next"
-                className={`rounded-full p-2 border transition-all duration-300 shadow-sm hover:shadow-md ${
-                  isDark
-                    ? "text-white border-white shadow-white"
-                    : "text-sky-600 border-sky-200 shadow-sky-300"
-                }`}
-                buttonContent={lang === "en" ? <ChevronRight /> : <ChevronLeft/>}
+                className={`rounded-md p-2 transition-all border duration-300 shadow-sm hover:shadow-md hover:bg-sky-100 ${isDark
+                  ? "text-white border-white shadow-white"
+                  : "text-sky-600 border-sky-200 shadow-sky-300"
+                  }`}
+                buttonContent={<div className="text-sm flex items-center justify-center w-20">
+                <p className="text-sm">{t("Next")}</p>
+                {lang === "en" ? <ChevronRight size={17} /> : <ChevronLeft size={17} />}
+                </div>}
               />
             </div>
           </div>

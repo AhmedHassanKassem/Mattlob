@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import Templates from './Templates';
+import Templates, { sampleResume } from './Templates';
 import CheckboxAdvanced from '../../../Containers/AnimateChekbox';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../Redux/store';
@@ -84,6 +84,7 @@ const Choose = () => {
             key={i18n.language}
             withCol={withColmun}
             withImg={withImg}
+            resume={sampleResume}
             selectedTempId={selectedTempId}
           />
         </div>

@@ -4,7 +4,7 @@ import Input from "../../../Containers/Input"
 import SideBar from "../../../Containers/SideBar"
 import { ChangeEvent, useEffect, useState } from "react"
 import Templates, { sampleResume } from "../ChooseTemplate/Templates"
-import { ICountry, ICVData, IDepartment, IGovernment, IImage, ILanguage, IResume, IVillage } from "../../../Interfaces/interface"
+import { ICountry, ICVData, IDepartment, IGovernment, ILanguage, IResume, IVillage } from "../../../Interfaces/interface"
 import { axiosInst } from "../../../axios/axios"
 import Select from "../../../Containers/Select"
 import { ChevronLeft, ChevronRight, Edit, Eye, Globe, LogOut, Pen, PlusCircle, Trash2, X } from "lucide-react"
@@ -14,6 +14,8 @@ import { toast } from "react-toastify"
 import { clearFoundUser } from "../../../Redux/Slices/userSlice"
 import { t } from "i18next"
 import PhoneInput from 'react-phone-input-2';
+import { removeCookie } from "../../../Utils/cookies"
+import { setResumeLangSlice } from "../../../Redux/Slices/resumeLang"
 
 const Fill = () => {
   const navigate = useNavigate()
@@ -27,10 +29,10 @@ const Fill = () => {
   const resumeColor = useSelector((state: RootState) => state.resumeColor.resumeColor)
   const temps = useSelector((state: RootState) => state.tempImg.isResumeWithImg)
   const foundCv = useSelector((state: RootState) => state.foundCv.localStorageCv)
-  const [resumeImage, setResumeImage] = useState<IImage>();
+  // const [resumeImage, setResumeImage] = useState<IImage>();
   const [showPreview, setShowPreview] = useState(false)
   const isDark = useSelector((state: RootState) => state.isDark.isDark)
-  const lang = useSelector((state: RootState) => state.lang.lang)
+  const lang = useSelector((state: RootState) => state.resumeLang.resumeLang)
 
   const [addLangs, setAddLangs] = useState<ILanguage>({
     language: '',
@@ -61,18 +63,19 @@ const Fill = () => {
     skills: [],
     personal_Links: [],
     education: [],
-    image: resumeImage
+    // image: resumeImage
+    image: {}
   }));
 
   const getProficiencyColor = (proficiency: string) => {
     switch (proficiency) {
-      case t('Native'):
+      case t('Native' , {lng : lang}):
         return 'bg-emerald-100 text-emerald-800 border-emerald-200';
-      case t('Fluent'):
+      case t('Fluent' , {lng : lang}):
         return 'bg-blue-100 text-blue-800 border-blue-200';
-      case t('Intermediate'):
+      case t('Intermediate' , {lng : lang}):
         return 'bg-amber-100 text-amber-800 border-amber-200';
-      case t('Beginner'):
+      case t('Beginner' , {lng : lang}):
         return 'bg-rose-100 text-rose-800 border-rose-200';
       default:
         return 'bg-gray-100 text-gray-800 border-gray-200';
@@ -80,58 +83,58 @@ const Fill = () => {
   };
   const getProficiencyIcon = (proficiency: string) => {
     const level = proficiency;
-    if (level === t('Native')) return '★★★★★';
-    if (level === t('Fluent')) return '★★★★☆';
-    if (level === t('Intermediate')) return '★★★☆☆';
-    if (level === t('Beginner')) return '★★☆☆☆';
+    if (level === t('Native' , {lng : lang})) return '★★★★★';
+    if (level === t('Fluent' , {lng : lang})) return '★★★★☆';
+    if (level === t('Intermediate' , {lng : lang})) return '★★★☆☆';
+    if (level === t('Beginner' , {lng : lang})) return '★★☆☆☆';
     return '★☆☆☆☆';
   };
 
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  };
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  // const formatFileSize = (bytes: number) => {
+  //   if (bytes === 0) return '0 Bytes';
+  //   const k = 1024;
+  //   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  //   const i = Math.floor(Math.log(bytes) / Math.log(k));
+  //   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  // };
+  // const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = e.target.files?.[0];
+  //   if (!file) return;
 
-    const maxSizeInMB = 2;
-    const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
+  //   const maxSizeInMB = 2;
+  //   const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
 
-    if (file.size > maxSizeInBytes) {
-      alert(`Image is too large. Max size is ${formatFileSize(maxSizeInBytes)}, but your file is ${formatFileSize(file.size)}`);
-      return;
-    }
+  //   if (file.size > maxSizeInBytes) {
+  //     alert(`Image is too large. Max size is ${formatFileSize(maxSizeInBytes)}, but your file is ${formatFileSize(file.size)}`);
+  //     return;
+  //   }
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const base64 = reader.result?.toString().split(',')[1];
+  //   const reader = new FileReader();
+  //   reader.onloadend = () => {
+  //     const base64 = reader.result?.toString().split(',')[1];
 
-      setResumeImage({
-        title: file.name,
-        description: '',
-        base64Image: base64,
-        fileExtension: `.${file.name.split('.').pop() || 'webp'}`
-      });
+  //     setResumeImage({
+  //       title: file.name,
+  //       description: '',
+  //       base64Image: base64,
+  //       fileExtension: `.${file.name.split('.').pop() || 'webp'}`
+  //     });
 
-      const updatedResume = {
-        ...resumeData,
-        image: {
-          title: file.name,
-          description: '',
-          base64Image: base64,
-          fileExtension: `.${file.name.split('.').pop() || 'webp'}`
-        }
-      }
-      setResumeData(updatedResume)
-      localStorage.setItem("resumeData", JSON.stringify(updatedResume));
-    };
+  //     const updatedResume = {
+  //       ...resumeData,
+  //       image: {
+  //         title: file.name,
+  //         description: '',
+  //         base64Image: base64,
+  //         fileExtension: `.${file.name.split('.').pop() || 'webp'}`
+  //       }
+  //     }
+  //     setResumeData(updatedResume)
+  //     localStorage.setItem("resumeData", JSON.stringify(updatedResume));
+  //   };
 
-    reader.readAsDataURL(file);
-  };
+  //   reader.readAsDataURL(file);
+  // };
 
   const getCountries = async () => {
     try {
@@ -183,15 +186,12 @@ const Fill = () => {
 
     await getGoverns(value || 0);
     setResumeData(updatedResume);
-    localStorage.setItem("resumeData", JSON.stringify(updatedResume)); // ✅
+    localStorage.setItem("resumeData", JSON.stringify(updatedResume));
   };
-
-
 
   useEffect(() => {
     getCountries();
   }, [temps]);
-
 
   useEffect(() => {
     if (foundCv) {
@@ -200,19 +200,25 @@ const Fill = () => {
     }
   }, [foundCv]);
 
+  useEffect(() => {
+    const storedLang = localStorage.getItem('resumeLang');
+    if (storedLang) {
+      dispatch(setResumeLangSlice(storedLang));
+    }
+  }, []);
 
 
-  const Marital = [t("Married"), t("Single"), t("Divorced"), t("Widowed")]
-  const Military = [t("Completed"), t("Not Completed"), t("Exempt"), t("Postponed"), t("Currently Serving")]
-  const langProfs = [t("Beginner"), t("Intermediate"), t("Fluent"), t("Native")]
+
+  const Marital = [t("Married" , {lng : lang}), t("Single" , {lng : lang}), t("Divorced" , {lng : lang}), t("Widowed")]
+  const Military = [t("Completed" , {lng : lang}), t("Not Completed" , {lng : lang}), t("Exempt" , {lng : lang}), t("Postponed" , {lng : lang}), t("Currently Serving")]
+  const langProfs = [t("Beginner" , {lng : lang}), t("Intermediate" , {lng : lang}), t("Fluent" , {lng : lang}), t("Native")]
   const languages = [
-    "English",
-    "Arabic",
-    "French",
-    "German",
-    "Chinese",
-    "Japanese",
-    "Dutch",
+    t("English" , {lng : lang}),
+    t("Arabic" , {lng : lang}),
+    t("French" , {lng : lang}),
+    t("Chinese" , {lng : lang}),
+    t("Japanese" , {lng : lang}),
+    t("Dutch" , {lng : lang}),
   ];
 
   const [summaryError, setSummaryError] = useState(false);
@@ -341,7 +347,7 @@ const Fill = () => {
         const year = parseInt(value.toString().slice(0, 4));
 
         if (isNaN(year) || year > 2008) {
-          newErrors[key] = t("Invalid dob");
+          newErrors[key] = t("Invalid dob" , {lng : lang});
         }
       }
 
@@ -479,9 +485,7 @@ const Fill = () => {
     // }
   }, []);
   const handleLogout = () => {
-    localStorage.removeItem('email')
-    localStorage.removeItem('user')
-    localStorage.removeItem('token')
+    removeCookie('token')
     dispatch(clearFoundUser());
     navigate('/login')
   }
@@ -537,16 +541,16 @@ const Fill = () => {
                 className={`lg:text-4xl font-bold mb-1 ${isDark ? "text-white" : "text-sky-700"
                   }`}
               >
-                {t("Start filling your data")}
+                {t("Start filling your data" , {lng : lang})}
               </h1>
               <p
                 className={`lg:text-sm text-xs lg:w-full w-45 ${isDark ? "text-gray-300" : "text-gray-600 text-sky-700"
                   }`}
               >
-                {t("Enter your data below to make your resume more reachable...")}
+                {t("Enter your data below to make your resume more reachable..." , {lng : lang})}
               </p>
               <p className="text-xs text-red-500 pt-6">
-                {t("* these fields are mandatory")}
+                {t("* these fields are mandatory" , {lng : lang})}
               </p>
             </div>
             <div>
@@ -560,7 +564,7 @@ const Fill = () => {
                       }`}
                   >
                     <LogOut size={18} />
-                    <p>{t("signOut")} </p>
+                    <p>{t("signOut" , {lng : lang})} </p>
                   </div>
                 }
               />
@@ -570,11 +574,11 @@ const Fill = () => {
           <form className="grid grid-cols-12 gap-4">
             <div className="lg:col-span-4 col-span-12">
               <Input
-                className={`w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500 transition ${isDark
+                className={`w-full border rounded px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-sky-500 transition ${isDark
                   ? "border-gray-700 bg-gray-800 text-white"
                   : "border-gray-300 bg-white text-black"
                   }`}
-                label={t("Full name")}
+                label={t("Full name" , {lng : lang})}
                 onChange={(e) => handleChange("full_name", e.target.value)}
                 errorMessage={errors.full_name}
                 value={resumeData?.full_name}
@@ -583,7 +587,8 @@ const Fill = () => {
 
             <div className="lg:col-span-4 col-span-12">
               <Select
-                label={t("Select Country")}
+                label={t("Select Country" , {lng : lang})}
+                forSelect={t("Choose" , {lng : lang})}
                 onChange={(e) => handleChangeCountry("country", Number(e.target.value))}
                 errorMessage={errors.country}
                 value={resumeData.country?.id}
@@ -599,7 +604,7 @@ const Fill = () => {
                     })}
                   </>
                 }
-                className={`w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500 ${isDark
+                className={`w-full border rounded-md px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-sky-500 ${isDark
                   ? "bg-gray-800 border-gray-700 text-gray-100"
                   : "bg-white border-gray-300 text-black"
                   }`}
@@ -607,9 +612,10 @@ const Fill = () => {
             </div>
             <div className="lg:col-span-4 col-span-12">
               <Select
-                label={t("Select City")}
+                label={t("Select City" , {lng : lang})}
                 onChange={(e) => handleChangeCity("city", Number(e.target.value))}
                 errorMessage={errors.city}
+                forSelect={t("Choose" , {lng : lang})}
                 value={resumeData.city?.id}
                 oneValue={
                   <>
@@ -623,7 +629,7 @@ const Fill = () => {
                     })}
                   </>
                 }
-                className={`w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500 ${isDark
+                className={`w-full border rounded-md px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-sky-500 ${isDark
                   ? "bg-gray-800 border-gray-700 text-gray-100"
                   : "bg-white border-gray-300 text-black"
                   }`}
@@ -631,7 +637,8 @@ const Fill = () => {
             </div>
             <div className="lg:col-span-4 col-span-12">
               <Select
-                label={t("Province")}
+                label={t("Province" , {lng : lang})}
+                forSelect={t("Choose" , {lng : lang})}
                 onChange={(e) => handleChangeProvince("province", Number(e.target.value))}
                 errorMessage={errors.province}
                 value={resumeData.province?.id}
@@ -647,7 +654,7 @@ const Fill = () => {
                     })}
                   </>
                 }
-                className={`w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500 ${isDark
+                className={`w-full border rounded-md px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-sky-500 ${isDark
                   ? "bg-gray-800 border-gray-700 text-gray-100"
                   : "bg-white border-gray-300 text-black"
                   }`}
@@ -655,7 +662,8 @@ const Fill = () => {
             </div>
             <div className="lg:col-span-4 col-span-12">
               <Select
-                label={t("Village")}
+                label={t("Village" , {lng : lang})}
+                forSelect={t("Choose" , {lng : lang})}
                 onChange={(e) => handleChangeVillage("village", Number(e.target.value))}
                 errorMessage={errors.village}
                 oneValue={
@@ -670,7 +678,7 @@ const Fill = () => {
                     })}
                   </>
                 }
-                className={`w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500 ${isDark
+                className={`w-full border rounded-md px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-sky-500 ${isDark
                   ? "bg-gray-800 border-gray-700 text-gray-100"
                   : "bg-white border-gray-300 text-black"
                   }`}
@@ -682,14 +690,14 @@ const Fill = () => {
                   ? "border-gray-700 bg-gray-800 text-white"
                   : "border-gray-300 bg-white text-black"
                   }`}
-                label={t("Additional address info")}
+                label={t("Additional address info" , {lng : lang})}
                 onChange={(e) => handleChange("address_info", e.target.value)}
                 errorMessage={errors.address_info}
                 value={resumeData?.address_info}
               />
             </div>
 
-            <div className="lg:col-span-4 col-span-12"> <label htmlFor="phone">{t("Phone")}</label>
+            <div className="lg:col-span-4 col-span-12"> <label htmlFor="phone">{t("Phone" , {lng : lang})}</label>
               <div dir={"ltr"} className="w-full">
 
                 <PhoneInput
@@ -739,7 +747,7 @@ const Fill = () => {
                 onChange={(e) => handleChange("email", e.target.value)}
                 errorMessage={errors.email}
                 value={resumeData?.email}
-                label={t("Email")}
+                label={t("Email" , {lng : lang})}
               />
             </div>
             <div className="lg:col-span-4 col-span-12">
@@ -752,13 +760,14 @@ const Fill = () => {
                 errorMessage={errors.birth_date}
                 value={resumeData?.birth_date}
                 type="date"
-                label={t("Date of birth")}
+                label={t("Date of birth" , {lng : lang})}
               />
             </div>
 
             <div className="lg:col-span-4 col-span-12">
               <Select
-                label={t("Marital status")}
+                label={t("Marital status" , {lng : lang})}
+                forSelect={t("Choose" , {lng : lang})}
                 onChange={(e) => handleChange("marital_status", e.target.value)}
                 errorMessage={errors.marital_status}
                 value={resumeData?.marital_status}
@@ -769,14 +778,14 @@ const Fill = () => {
                     })}
                   </>
                 }
-                className={`w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500 ${isDark
+                className={`w-full border rounded-md px-3 py-3 focus:outline-none focus:ring-2 focus:ring-sky-500 ${isDark
                   ? "bg-gray-800 border-gray-700 text-gray-100"
                   : "bg-white border-gray-300 text-black"
                   }`}
               />
             </div>
             {/* {isTempWithImg ? ( */}
-              <div className="lg:col-span-4 col-span-12">
+            {/* <div className="lg:col-span-4 col-span-12">
                 <div className="relative">
                   <label htmlFor="">Add Image</label>
                   <input
@@ -789,12 +798,13 @@ const Fill = () => {
                       }`}
                   />
                 </div>
-              </div>
+              </div> */}
             {/* ) : null} */}
 
             <div className="lg:col-span-4 col-span-12">
               <Select
-                label={t("Military status")}
+                label={t("Military status" , {lng : lang})}
+                forSelect={t("Choose" , {lng : lang})}
                 onChange={(e) => handleChange("military_status", e.target.value)}
                 errorMessage={errors.military_status}
                 value={resumeData?.military_status}
@@ -805,7 +815,7 @@ const Fill = () => {
                     })}
                   </>
                 }
-                className={`w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500 ${isDark
+                className={`w-full border rounded-md px-3 py-3 focus:outline-none focus:ring-2 focus:ring-sky-500 ${isDark
                   ? "bg-gray-800 border-gray-700 text-gray-100"
                   : "bg-white border-gray-300 text-black"
                   }`}
@@ -819,7 +829,7 @@ const Fill = () => {
                   className={`block text-sm font-medium mb-2 ${isDark ? "text-gray-300" : "text-gray-700"
                     }`}
                 >
-                  {t("Objective or summary")}
+                  {t("Objective or summary" , {lng : lang})}
                 </label>
                 <textarea
                   name="summary"
@@ -828,12 +838,12 @@ const Fill = () => {
                     ? "border-gray-700 bg-gray-800 text-white"
                     : "border-gray-400 bg-white text-black"
                     }`}
-                  placeholder={t("Write a brief summary about yourself...")}
+                  placeholder={t("Write a brief summary about yourself..." , {lng : lang})}
                   value={resumeData?.summary}
                 />
                 {summaryError && (
                   <p className="text-sm text-red-500 mt-1">
-                    {t("Summary must contain at least 200 letters.")}
+                    {t("Summary must contain at least 200 letters." , {lng : lang})}
                   </p>
                 )}
               </div>
@@ -841,6 +851,7 @@ const Fill = () => {
             <div className="lg:col-span-5 col-span-12">
               <Select
                 label={t("Select languages")}
+                forSelect={t("Choose" , {lng : lang})}
                 onChange={(e) => handleChangeLang("language", e.target.value)}
                 errorMessage={langErrors.language}
                 value={addLangs.language}
@@ -851,7 +862,7 @@ const Fill = () => {
                     })}
                   </>
                 }
-                className={`w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500 ${isDark
+                className={`w-full border rounded-md px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-sky-500 ${isDark
                   ? "bg-gray-800 border-gray-700 text-gray-100"
                   : "bg-white border-gray-300 text-black"
                   }`}
@@ -859,7 +870,8 @@ const Fill = () => {
             </div>
             <div className="lg:col-span-5 col-span-12">
               <Select
-                label={t("Language proficiency")}
+                label={t("Language proficiency" , {lng : lang})}
+                forSelect={t("Choose" , {lng : lang})}
                 onChange={(e) => handleChangeLang("proficiency", e.target.value)}
                 errorMessage={langErrors.proficiency}
                 value={addLangs.proficiency}
@@ -870,7 +882,7 @@ const Fill = () => {
                     })}
                   </>
                 }
-                className={`w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500 ${isDark
+                className={`w-full border rounded-md px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-sky-500 ${isDark
                   ? "bg-gray-800 border-gray-700 text-gray-100"
                   : "bg-white border-gray-300 text-black"
                   }`}
@@ -939,7 +951,7 @@ const Fill = () => {
                             </div>
                           </div>
 
-                          <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                          <div className="flex items-center space-x-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-200">
                             <Button
                               btnContentClassname="p-2 hover:bg-green-50 rounded-lg transition-colors duration-200"
                               className="flex items-center justify-center"
@@ -1001,32 +1013,39 @@ const Fill = () => {
         ) : null}
 
         <div
-          className={`col-span-12 fixed bottom-0 right-0 p-2 w-full border shadow-md transition-colors duration-300 ${isDark
+          className={`col-span-12 fixed bottom-0 right-0 p-2 w-full border shadow-md transition-colors duration-300 z-50 ${isDark
             ? "bg-gray-800 border-gray-700 text-white"
             : "bg-white border border-gray-200 text-black"
             }`}
         >
           <div className="flex justify-center lg:justify-end">
-            <div className="flex lg:gap-5 gap-15 text-lg font-bold">
+            <div className="flex lg:gap-5 gap-10 text-lg font-bold">
               <Button
-                className={`rounded-full p-2 transition-all duration-300 border shadow-sm hover:shadow-md ${isDark ? "text-white border-white shadow-white" : "border-sky-200 text-sky-600"
+                className={`rounded-md p-2 transition-all duration-300 border shadow-sm hover:shadow-md hover:bg-sky-100 ${isDark ? "text-white border-white shadow-white" : "border-sky-200 text-sky-600"
                   }`}
                 onClick={() => navigate(-1)}
                 btnTitle="Go Previous"
-                buttonContent={lang === "en" ? <ChevronLeft /> : <ChevronRight />}
+                buttonContent={<div className="text-sm flex items-center justify-center w-20">
+                  {lang === "en" ? <ChevronLeft size={17} /> : <ChevronRight size={17} />}
+                  <p className="text-sm">{t("Previous" , {lng : lang})}</p>
+                </div>}
               />{" "}
               <Button
                 onClick={() => setShowPreview(true)}
                 btnTitle="Show Preview"
-                className={`rounded-full p-2 transition-all duration-300 border shadow-sm hover:shadow-md ${isDark ? "text-white border-white shadow-white" : "border-sky-200 text-sky-600"
+                className={`rounded-md p-2 transition-all duration-300 border shadow-sm hover:shadow-md hover:bg-sky-100 ${isDark ? "text-white border-white shadow-white" : "border-sky-200 text-sky-600"
                   }`}
-                buttonContent={<Eye />}
+                buttonContent={<div className="flex items-center w-32 justify-center gap-1"><Eye />
+                 <p className="text-sm">{t("Preview" , {lng : lang})}</p></div>}
               />
               <Button
                 onClick={handleNext}
                 btnTitle="Go Next"
-                buttonContent={lang === "en" ? <ChevronRight /> : <ChevronLeft />}
-                className={`rounded-full p-2 transition-all duration-300 border shadow-sm hover:shadow-md ${isDark ? "text-white border-white shadow-white" : "border-sky-200 text-sky-600"
+                buttonContent={<div className="text-sm flex items-center justify-center w-20">
+                  <p className="text-sm">{t("Next" , {lng : lang})}</p>
+                  {lang === "en" ? <ChevronRight size={17} /> : <ChevronLeft size={17} />}
+                </div>}
+                className={`rounded-md p-2 transition-all duration-300 border shadow-sm hover:shadow-md hover:bg-sky-100 ${isDark ? "text-white border-white shadow-white" : "border-sky-200 text-sky-600"
                   }`}
               />
             </div>

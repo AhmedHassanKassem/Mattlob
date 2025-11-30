@@ -125,6 +125,7 @@ export interface tempProps {
   disableScale?: boolean
   color?: string,
   accentColor?: string,
+  className?: string,
   image?: IImage
   withCol?: boolean,
   withImg?: boolean,

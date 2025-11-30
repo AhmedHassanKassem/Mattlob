@@ -6,9 +6,6 @@ import { AppDispatch, RootState } from '../../../Redux/store';
 import SelectBar from '../../../Containers/SelectBar';
 import { useTranslation } from 'react-i18next';
 
-
-
-
 // Sample resume data used by all templates
 export const sampleResume: tempProps = {
   color: '',
@@ -89,7 +86,6 @@ export const sampleResume: tempProps = {
   }
 };
 
-// Color options with tailwind classes and hex codes for inline style
 const colorOptions = [
   { label: 'Slate', css: 'bg-gray-700', code: '#374151' },
   { label: 'Emerald', css: 'bg-green-600', code: '#16a34a' },
@@ -102,34 +98,31 @@ const colorOptions = [
   { label: 'Pink', css: 'bg-pink-600', code: '#db2777' },
   { label: 'Orange', css: 'bg-orange-600', code: '#ea580c' },
 ];
-// Reusable lists
 
 // Choose component:
-const Templates: FC<tempProps> = (props) => {
+const Templates: FC<any> = (props) => {
   const {
-    selectedTempId,
-    resume,
-    ref = null,
-    color,
     withCol = false,
     withImg = false,
   } = props;
-  const { t } = useTranslation()
-  const [selectedTemplate, setSelectedTemplate] = useState<number>(selectedTempId!);
-  const [temps, setTemps] = useState<any[]>([]);
-  const [selectedColor, setSelectedColor] = useState(colorOptions[0].code);
-  const dispatch: AppDispatch = useDispatch()
+  const lang = useSelector((state: RootState) => state.resumeLang.resumeLang) || useSelector((state: RootState) => state.lang.lang);
+  const { t } = useTranslation("cv");
+  const dispatch: AppDispatch = useDispatch();
   const findCv = useSelector((state: RootState) => state.foundCv.localStorageCv);
   const monthNames = [
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
   ];
+  const [selectedTemplate, setSelectedTemplate] = useState<number>(0);
+  const [selectedColor, setSelectedColor] = useState<string>("");
+  const selectedTempId = selectedTemplate;
+  const ref = React.useRef<HTMLDivElement>(null);
 
   const ExperienceList: React.FC<{ experience?: IExperience[], accentColor: string }> = ({ experience }) => (
     <div className="space-y-4">
       {(Array.isArray(experience) ? experience : []).map((item, i) => (
         <div key={i}>
-          <h3 className="text-gray-800">{lang === 'en' ? item.role.en_name : item.role.ar_name}</h3>
+          <h3 className="text-gray-800 font-bold">{lang === 'en' ? item.role.en_name : item.role.ar_name}</h3>
 
           {item.company && item.from_year && (
             <p className="text-sm ">
@@ -138,19 +131,29 @@ const Templates: FC<tempProps> = (props) => {
             </p>
           )}
 
-          <p className="text-sm ">{lang === "en" ? item.country.en_name : item.country.ar_name},
-            {lang === "en" ? item.city.en_name : item.city.ar_name}</p>
-          <p className="text-sm text-gray-700 text-justify break-words whitespace-normal">{item.details}</p>
+          <p className="text-sm text-gray-700 mt-1 font-bold">
+            {[item.address_info ? item.address_info : null,
+            item.village ? (lang === "en" ? item.village.en_name : item.village.ar_name) : null,
+            item.province ? (lang === "en" ? item.province.en_name : item.province.ar_name) : null,
+            item.city ? (lang === "en" ? item.city.en_name : item.city.ar_name) : null,
+            item.country ? (lang === "en" ? item.country.en_name : item.country.ar_name) : null,
+
+            ]
+              .filter(Boolean)
+              .join(", ")}
+          </p>
+          <p className="text-sm  text-black text-justify break-words whitespace-normal">{item.details}</p>
         </div>
       ))}
     </div>
   );
+
   const CourseList: React.FC<{ course?: ICourse[], accentColor: string }> = ({ course: course }) => (
     <div className="space-y-4">
       {(Array.isArray(course) ? course : []).map((item, i) => (
         <div key={i}>
           <div className='flex justify-between'>
-            <h3 className="text-gray-800">{item.course_name}</h3>
+            <h3 className="text-black font-bold">{item.course_name}</h3>
 
             {item.from_year && (
               <p className="text-xs text-gray-700">
@@ -160,19 +163,22 @@ const Templates: FC<tempProps> = (props) => {
 
             )}
 
-          </div>           {item.institution && <p className="text-sm">
+          </div>
+          {item.institution && <p className="text-sm">
             {item.institution} </p>}
-          <p className="text-sm ">{lang === 'en' ? item.country.en_name : item.country.ar_name}, {lang === 'en' ? item.city.en_name : item.city.ar_name}</p>
+          <p className="text-sm font-bold">
+            {lang === 'en' ? item.city.en_name : item.city.ar_name} -  {lang === 'en' ? item.country.en_name : item.country.ar_name}</p>
           <p className="text-sm text-gray-700">{item.details}</p>
         </div>
       ))}
     </div>
   );
+
   const VolunteersList: React.FC<{ volunteers?: IVolunteer[], accentColor: string }> = ({ volunteers: volunteers }) => (
     <div className="space-y-4">
       {(Array.isArray(volunteers) ? volunteers : []).map((item, i) => (
         <div key={i}>
-          <h3 className="text-gray-800">{item.role}</h3>
+          <h3 className="text-black font-bold">{item.role}</h3>
 
           {item.company && item.from_year && (
             <p className="text-sm ">
@@ -181,8 +187,15 @@ const Templates: FC<tempProps> = (props) => {
             </p>
           )}
 
-          <p className="text-sm ">{lang === 'en' ? item.country.en_name : item.country.ar_name}, {lang === 'en' ? item.city.en_name : item.city.ar_name}</p>
-          <p className="text-sm text-gray-700 text-justify break-words whitespace-normal">{item.details}</p>
+          <p className="text-sm text-gray-700 mt-1 font-bold">
+            {[
+              item.city ? (lang === "en" ? item.city.en_name : item.city.ar_name) : null,
+              item.country ? (lang === "en" ? item.country.en_name : item.country.ar_name) : null,
+
+            ]
+              .filter(Boolean) // يشيل أي null أو undefined
+              .join(" - ")}
+          </p>          <p className="text-sm text-gray-700 text-justify break-words whitespace-normal">{item.details}</p>
         </div>
       ))}
     </div>
@@ -194,10 +207,11 @@ const Templates: FC<tempProps> = (props) => {
         <div key={i}>
           <h3 className="text-gray-800">{item.edu_type}</h3>
           <div className='flex justify-between'>
-            <div>
-              <p className="text-sm">{lang === 'en' ? item.college.en_name : item.college.ar_name
-                || lang === 'en' ? item.institute.en_name : item.institute.ar_name} - {lang === 'en' ? item.specialty.en_name : item.specialty.ar_name}</p>
-              <p className="text-sm">{lang === 'en' ? item.university.en_name : item.university.ar_name} - {lang === 'en' ? item.city.en_name : item.city.ar_name}</p>
+            <div className='font-bold'>
+              <p className="text-sm">{lang === 'en' ? item.university.en_name : item.university.ar_name} - {item.edu_level === "1" && lang === 'en' ? item.college.en_name : item.college.ar_name}
+                {item.edu_level === "2" && lang === 'en' ? item.institute.en_name : item.institute.ar_name} - {lang === 'en' ? item.specialty.en_name : item.specialty.ar_name}</p>
+              <p className="text-sm">
+                {lang === 'en' ? item.city.en_name : item.city.ar_name} - {lang === 'en' ? item.country.en_name : item.country.ar_name}</p>
             </div>
             <p className='text-xs'>{item.from_year} - {item.to_year}</p>
 
@@ -206,36 +220,17 @@ const Templates: FC<tempProps> = (props) => {
       ))}
     </div>
   );
-  // const Certifications: React.FC<{ cert?: ICertification[], accentColor: string }> = ({ cert }) => (
-  //   <div className="space-y-3">
-  //     {(Array.isArray(cert) ? cert : []).map((item, i) => (
-  //       <div key={i}>
-  //         <h3 className="text-gray-800">{item.name}</h3>
-  //         <p className="text-sm ">{item.issuer}</p>
-  //         <p className="text-sm ">{item.date}</p>
-  //       </div>
-  //     ))}
-  //   </div>
-  // );
-  const Languages: React.FC<{ lang?: ILanguage[], accentColor: string }> = ({ lang }) => (
+
+  const Languages: React.FC<{ languages?: ILanguage[], accentColor: string }> = ({ languages }) => (
     <div className="space-y-3">
-      {(Array.isArray(lang) ? lang : []).map((item, i) => (
+      {(Array.isArray(languages) ? languages : []).map((item, i) => (
         <div key={i} className='flex items-center gap-2'>
-          <h3 className="text-gray-800">{t(`${item.language}`)}</h3>
-          <p className="text-xs  mt-1">{t(`${item.proficiency}`)}</p>
+          <h3 className="text-gray-800">{t(`${item.language}`, { lng: lang })}</h3>
+          <p className="text-xs  mt-1">{t(`${item.proficiency}`, { lng: lang })}</p>
         </div>
       ))}
     </div>
   );
-  // const Links: React.FC<{ link?: string[] }> = ({ link }) => (
-  //   <div className="space-y-3 flex">
-  //     {(Array.isArray(link) ? link : []).map((item, i) => (
-  //       <div key={i} className='flex items-center gap-2'>
-  //         <p className="text-xs  mt-1 text-blue-400">{item}</p>
-  //       </div>
-  //     ))}
-  //   </div>
-  // );
 
   const SkillsList: React.FC<{ skills?: ISkills[] }> = ({ skills }) => (
     <ul className="flex flex-wrap gap-2 text-xs">
@@ -244,12 +239,6 @@ const Templates: FC<tempProps> = (props) => {
       ))}
     </ul>
   );
-
-
-  // Template 1: Classic Professional (Simple two-column)
-  // Template 1: Classic Layout
-  // Template 1: Classic Professional
-  // Template 1: Classic Professional Layout
 
   const formatDate = (date: string | number) => {
     const d = new Date(date);
@@ -274,98 +263,79 @@ const Templates: FC<tempProps> = (props) => {
     }
     return [];
   };
-  // const getImageSrc = () => {
-  //   const location = useLocation()
-  //   const path = location.pathname
-  //   const resume: ICVData = JSON.parse(localStorage.getItem('resumeData')!);
-  //   if (resume?.image?.base64Image) {
-
-  //     return `data:image/${resume.image.fileExtension};base64,${resume.image?.base64Image}`;
-
-
-  //   } else if (resume?.attach?.path) {
-  //     if (path === '/build-resume/choose-temp') {
-  //       return `/sample.webp`;
-  //     } else {
-  //       const baseUrl = 'http://magedzz-001-site4.anytempurl.com';
-  //       return `${baseUrl}${resume.attach.path}`;
-  //     }
-
-  //   }
-  //   return null; // ✅ بدل string فاضية
-  // };
-
 
   const Template1: React.FC<{ resume: IResume, accentColor: string }> = ({ resume, accentColor }) => (
     <div
       className='border p-5'
+      dir={lang === "en" ? 'ltr' : 'rtl'}
     >
       {/* HEADER */}
 
       <header className="text-center pb-4 mb-4">
-        <h1 className="text-2xl font-bold text-black">{resume.full_name}</h1>
-        <p className="text-sm text-gray-700 mt-1">{lang === 'en' ? resume.country?.en_name : resume.country?.ar_name},
-          {lang === 'en' ? resume.city?.en_name : resume.city?.ar_name + ","}
-          {lang === 'en' ? resume.province?.en_name : resume.province?.ar_name}
-          {lang === 'en' ? "," + resume.village?.en_name : resume.village?.ar_name}
-          {resume.address_info && "," + resume.address_info}</p>
+        <h1 className="text-2xl font-bold text-black">{resume.full_name && resume.full_name}</h1>
+        <p className="text-sm text-gray-700 mt-1">
+          {[resume.address_info ? resume.address_info : null,
+          resume.village ? (lang === "en" ? resume.village.en_name : resume.village.ar_name) : null,
+          resume.province ? (lang === "en" ? resume.province.en_name : resume.province.ar_name) : null,
+          resume.city ? (lang === "en" ? resume.city.en_name : resume.city.ar_name) : null,
+          resume.country ? (lang === "en" ? resume.country.en_name : resume.country.ar_name) : null,
 
+          ]
+            .filter(Boolean) // يشيل أي null أو undefined
+            .join(", ")}
+        </p>
 
         <div className="flex justify-center gap-6 text-xs text-gray-700 mt-2">
-          <p>{resume.email}</p>
-          <p>{resume.phone}</p>
+          <p>{resume.email && resume.email}</p>
+          <p>{resume.phone && resume.phone + "+"}</p>
 
         </div>
       </header>
 
-
       {/* OBJECTIVE */}
       <section className="mb-6">
-        <h2 className="font-bold text-black text-مل mb-1 border-b pb-1" style={{ borderColor: "#000" }}>
-          {t("objective")}
+        <h2 className="font-extrabold text-black text-lg mb-1 border-b pb-1" style={{ borderColor: "#000" }}>
+          {t("objective", { lng: lang })}
         </h2>
         <p className="text-sm text-gray-800 text-justify break-words whitespace-normal leading-relaxed">{resume.summary}</p>
       </section>
 
-
       {/* EXPERIENCE */}
       <section className="mb-6">
-        <h2 className="font-bold text-black text-lg mb-1 border-b pb-1">{t("experience")}</h2>
+        <h2 className="font-extrabold text-black text-lg mb-1 border-b pb-1">{t("experience", { lng: lang })}</h2>
         <ExperienceList experience={resume.work_History} accentColor={accentColor} />
       </section>
       {resume.volunteers && resume.volunteers.length > 0 && <section className="mb-6">
-        <h2 className="font-bold text-black text-lg mb-1 border-b pb-1">{t("volunteers")}</h2>
+        <h2 className="font-extrabold text-black text-lg mb-1 border-b pb-1">{t("volunteers", { lng: lang })}</h2>
         <VolunteersList volunteers={resume.volunteers} accentColor={accentColor} />
       </section>}
 
       {/* EDUCATION */}
       {resume.education && resume.education.length > 0 && <section className="mb-6">
-        <h2 className="font-bold text-black text-lg mb-1 border-b pb-1">{t("education")}</h2>
+        <h2 className="font-extrabold text-black text-lg mb-1 border-b pb-1">{t("education", { lng: lang })}</h2>
         <EducationList education={resume.education} accentColor={accentColor} />
       </section>}
 
-
       {resume.courses && resume.courses.length > 0 && <section className="mb-6">
-        <h2 className="font-bold text-black text-lg mb-1 border-b pb-1">{t("courses")}</h2>
+        <h2 className="font-extrabold text-black text-lg mb-1 border-b pb-1">{t("courses", { lng: lang })}</h2>
         <CourseList course={resume.courses!} accentColor={accentColor} />
       </section>}
 
-
       {normalizeLanguages(resume.languages).length > 0 && (
         <section className="mb-6">
-          <h2 className="font-bold mb-1 border-b pb-1 flex items-center" style={{ color: accentColor }}>
-            {t("languages")}
+          <h2 className="font-extrabold text-black text-lg mb-1 border-b pb-1">
+            {t("languages", { lng: lang })}
           </h2>
-          <Languages lang={normalizeLanguages(resume.languages)} accentColor={accentColor} />
+          <Languages languages={normalizeLanguages(resume.languages)} accentColor={accentColor} />
         </section>
       )}
 
       {/* Certifications Section */}
       {resume.certifications && resume.certifications.length > 0 && (
         <section className="mt-5">
-          <h2 className="font-bold mb-4 flex items-center" style={{ color: accentColor }}>
+          <h2 className="font-extrabold mb-4 flex items-center">
             <span className="w-1 h-6 mr-3 rounded" style={{ backgroundColor: accentColor }}></span>
-            {t("Certifications")}
+            {t("Certifications", { lng: lang })}
           </h2>
           <div className="space-y-2">
             {resume.certifications.map((cert: ICertification, index: number) => (
@@ -381,18 +351,17 @@ const Templates: FC<tempProps> = (props) => {
 
       {/* SKILLS */}
       {resume.skills && resume.skills.length > 0 && <section className="mb-6">
-        <h2 className="font-bold text-black text-sm mb-1 border-b pb-1">{t("skills")}</h2>
+        <h2 className="font-extrabold text-black text-lg mb-1 border-b pb-1">{t("skills", { lng: lang })}</h2>
         <SkillsList skills={resume.skills} />
       </section>}
 
-
       {/* PERSONAL INFO */}
       <section>
-        <h2 className="font-bold text-black text-sm mb-1 border-b pb-1">{t("personal information")}</h2>
+        <h2 className="font-extrabold text-black text-lg mb-1 border-b pb-1">{t("personal information", { lng: lang })}</h2>
         <ul className="text-sm text-gray-800 leading-relaxed list-disc mx-5">
-          {resume.birth_date && <li>{t("Date of birth")} :  {formatDate(resume.birth_date)}</li>}
-          {resume.military_status && <li>{t("Military status")} :  {t(resume.military_status)}</li>}
-          {resume.marital_status && <li>{t("Marital status")} :  {t(resume.marital_status)}</li>}
+          {resume.birth_date && <li>{t("Date of birth", { lng: lang })} :  {formatDate(resume.birth_date)}</li>}
+          {resume.military_status && <li>{t("Military status", { lng: lang })} :  {t(resume.military_status, { lng: lang })}</li>}
+          {resume.marital_status && <li>{t("Marital status", { lng: lang })} :  {t(resume.marital_status, { lng: lang })}</li>}
         </ul>
       </section>
 
@@ -400,27 +369,14 @@ const Templates: FC<tempProps> = (props) => {
 
   );
 
-
-
   const templates = [
     { id: 1, type: Template1, withColumn: false, withImage: false },
-    // { id: 2, type: Template2, withColumn: true, withImage: false },
-    // { id: 3, type: Template3, withColumn: true, withImage: true },
-    // { id: 4, type: Template4, withColumn: false, withImage: true },
-    // { id: 5, type: Template5, withColumn: true, withImage: false },
-    // { id: 6, type: Template6, withColumn: false, withImage: false },
-    // { id: 7, type: Template7, withColumn: false, withImage: false },
-    // { id: 8, type: Template8, withColumn: true, withImage: true },
-    // { id: 9, type: Template9, withColumn: false, withImage: false },
-    // { id: 10, type: Template10, withColumn: false, withImage: false },
   ];
-
 
   const findTemplate: any = templates.find((temp) => temp.id === Number(selectedTempId));
 
   const isWithColSet = Object.prototype.hasOwnProperty.call(props, "withCol");
   const isWithImgSet = Object.prototype.hasOwnProperty.call(props, "withImg");
-
 
   useEffect(() => {
     const tempId = Number(localStorage.getItem("tempId"))
@@ -455,12 +411,7 @@ const Templates: FC<tempProps> = (props) => {
 
   }, [selectedTempId, withCol, withImg, findCv]);
 
-
-
-
-
-
-
+  const [temps, setTemps] = useState(templates);
 
   const baseWidth = 700;
   const scale = 0.3; // or tweak to 0.35 or 0.5 based on spacing
@@ -515,8 +466,6 @@ const Templates: FC<tempProps> = (props) => {
     }
   };
 
-
-
   const setColor = (id?: number, colorCode?: string) => {
     setSelectedTemplate(id!);
     setSelectedColor(colorCode!);
@@ -524,7 +473,6 @@ const Templates: FC<tempProps> = (props) => {
 
   }
   const path = window.location.pathname;
-  const lang = useSelector((state: RootState) => state.lang.lang)
   return (
     <>
       {path === "/build-resume/choose-temp" ? <div className='grid grid-cols-12'>
@@ -550,7 +498,7 @@ const Templates: FC<tempProps> = (props) => {
                   transform: `scale(${scale})`,
                   transformOrigin: "top left",
                   width: `${baseWidth}px`,
-                  height: "auto"
+                  height: "100%"
                 }}
               >
 
@@ -560,7 +508,7 @@ const Templates: FC<tempProps> = (props) => {
                 }}>
                   {Template && (
                     <Template.type
-                      resume={sampleResume.resume! || resume!}
+                      resume={sampleResume.resume! || props.resume!}
                       accentColor={selectedTemplate === Template.id ? selectedColor : "#000"}
                     />
                   )}
@@ -590,10 +538,10 @@ const Templates: FC<tempProps> = (props) => {
 
       </div> :
 
+
         <div
           style={{
             width: '100%',
-            overflow: "auto",
           }}
           className="flex justify-center"
 
@@ -601,20 +549,18 @@ const Templates: FC<tempProps> = (props) => {
           <div
             ref={ref}
             style={{
-              width: "605px",
+              width: "700px",
               margin: "0px",
-              padding: "0px",
-              height: "1123px",
+              padding: "20px",
               background: "white",
-              boxSizing: "border-box",
             }}
           >
 
             {findTemplate ? (
               <findTemplate.type
 
-                resume={resume}
-                accentColor={color}
+                resume={props.resume}
+                accentColor={props.color}
               />
             ) : (
               <p className="text-center text-gray-500 mt-10">
@@ -623,6 +569,7 @@ const Templates: FC<tempProps> = (props) => {
             )}
           </div>
         </div>
+
 
 
       }

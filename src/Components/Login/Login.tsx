@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
 import { useForm } from "react-hook-form";
 
@@ -15,7 +15,7 @@ import { axiosInst } from "../../axios/axios";
 import { setTokenValue } from "../../Redux/Slices/tokenSlice";
 import { setFoundUser } from "../../Redux/Slices/userSlice";
 import Input from "../../Containers/Input";
-import { setCookie } from "../../Utils/cookies";
+import { getCookie, setCookie } from "../../Utils/cookies";
 import { useTranslation } from "react-i18next";
 
 
@@ -62,7 +62,7 @@ const {t} = useTranslation()
               };
               dispatch(setFoundUser(user));
         toast.success("Logged in successfully");
-        navigate('/home');
+        navigate('/');
       } else {
         toast.error("Invalid email or password");
       }
@@ -78,28 +78,32 @@ const {t} = useTranslation()
   
 const signInWithLinked = ()=>{
   try {
-       const host = window.location.host
+  const host = "https://mattlob.com"
   const clientId = '864irqylqi4oka';
-  const redirectUri = `http://${host}`;
+  const redirectUri = host;
   const scope = 'email profile openid';
-
   const responseType = 'code';
-      const linkedInUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=${responseType}&client_id=${clientId}&redirect_uri=${redirectUri}&scope=${encodeURIComponent(scope)}&state=linkedin`;
-      window.location.href = linkedInUrl
-      
+  const linkedInUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=${responseType}&client_id=${clientId}&redirect_uri=${redirectUri}&scope=${encodeURIComponent(scope)}&state=linkedin`;
+  window.location.href = linkedInUrl    
   } catch (error) {
     console.log(error);   
   }
 }
 const signInWithGoogle = () => {
-   const host = window.location.host
+   const host = "https://mattlob.com"
   const clientId = '967275738944-dmo8h43tpupar5aq6kjht57vmn6l951i.apps.googleusercontent.com';
-  const redirectUri = `http://${host}`;
+  const redirectUri = host; 
   const scope = 'email profile openid';
   const responseType = 'code';
   const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=${responseType}&scope=${encodeURIComponent(scope)}&access_type=offline&prompt=consent&state=google`;
   window.location.href = googleAuthUrl;
 };
+  useEffect(() => {
+    const token = getCookie("token");
+    if (token) {
+      navigate("/home", { replace: true }); // ممنوع يرجع للوراء
+    }
+  }, []);
   return (
     <div>
       <div className="grid lg:grid-cols-12 overflow-hidden">
@@ -193,7 +197,7 @@ const signInWithGoogle = () => {
                       <div className="flex-grow border-b border-gray-300"></div>
                     </div>
                     <div className="flex gap-7 justify-center mt-2">
-                      <img loading="lazy" src="/linked.webp" alt="linked" onClick={signInWithLinked} className="transform hover:scale-110 duration-700 cursor-pointer" width={40} />
+                      <img loading="lazy" src="/linked.png" alt="linked" onClick={signInWithLinked} className="transform hover:scale-110 duration-700 cursor-pointer" width={40} />
                       <img loading="lazy" src="/google.png" alt="linked" onClick={signInWithGoogle} className="transform hover:scale-110 duration-700 cursor-pointer" width={40} />
                     </div>
                   </div>

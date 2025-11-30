@@ -68,7 +68,7 @@ const Navbar = () => {
 console.log(user);
 
   return (
-    <div className={`transition-colors duration-300 ${isDark ? "bg-slate-900 text-white" : "bg-white text-gray-900"}`}>
+    <div className={`transition-colors duration-300 ${isDark ? "bg-slate-900 text-white" : "bg-white text-gray-900"} no-print`}>
       <nav className={`${isDark ? "bg-slate-800 shadow-lg shadow-slate-900/50" : "bg-white shadow-md"} transition-all duration-300`}>
         <div className=" mx-auto px-4 sm:px-6">
           <div className="flex justify-between items-center h-16">

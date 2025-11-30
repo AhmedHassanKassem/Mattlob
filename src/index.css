@@ -7,11 +7,37 @@
 
 @font-face {
   font-family: 'ArabicFont';
-  src: url('/fonts/Almarai-Bold.woff') format('woff');
+  src: url('/fonts/Almarai-Light.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ArabicFont';
+  src: url('/fonts/Almarai-Regular.woff') format('woff');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
+
+@font-face {
+  font-family: 'ArabicFont';
+  src: url('/fonts/Almarai-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ArabicFont';
+  src: url('/fonts/Almarai-ExtraBold.woff') format('woff');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+
 
 body.ar {
   font-family: 'ArabicFont', sans-serif !important;
@@ -20,28 +46,29 @@ body.en {
   font-family: 'Poppins', sans-serif !important;
 }
 @media print {
-  body * {
-    visibility: hidden !important;
-
-  }
-
-  .cv-print-area, .cv-print-area * {
-    visibility: visible !important;
+  @page {
+    margin: 1cm; /* مسافة بين الحافة والصفحة */
   }
 
   .cv-print-area {
-    position: absolute !important;
-    left: 0 !important;
-    top: 0 !important;
-    width: 100% !important;
-    padding: 0 !important;
-    margin: 0 !important;
+    display: block !important;
+    break-inside: avoid; /* يمنع القطع داخل العنصر */
+    box-decoration-break: clone; /* يكرر البوردر لكل صفحة */
   }
+
+  .cv-print-area * {
+    break-inside: avoid-page; /* يمنع تقسيم العناصر الصغيرة داخل الصفحات */
+  }
+
   .no-print {
     display: none !important;
   }
- 
 }
+
+
+
+
+
   .cv-page {
   width: 794px;
   min-height: 100%;
@@ -108,6 +135,15 @@ input::placeholder {
   font-size: 12px;
 }
 
+.cv-ltr {
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+.cv-rtl {
+  direction: rtl !important;
+  text-align: right !important;
+}
 
 #option {
   font-size: 14px;

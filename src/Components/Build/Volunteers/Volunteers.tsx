@@ -431,7 +431,7 @@ const Volunteers = () => {
                   <div className="flex items-start sm:items-center gap-3 flex-wrap">
                     <div className="w-2 h-2 rounded-full mt-1 sm:mt-0" style={{ backgroundColor: isDark ? "#60a5fa" : "#3b82f6" }}></div>
                     <p className={`text-xl font-semibold group-hover:text-blue-600 transition-colors break-words ${isDark ? "text-gray-100" : "text-gray-900"}`}>
-                      <span className={`text-sm font-normal mr-2 ${isDark ? "text-gray-400" : "text-gray-500"}`}>{t("Role")}:</span>
+                      <span className={`text-sm font-normal mx-2 ${isDark ? "text-gray-400" : "text-gray-500"}`}>{t("Job title")}:</span>
                       {vol.role}
                     </p>
                   </div>
@@ -439,7 +439,7 @@ const Volunteers = () => {
                   <div className="flex items-start sm:items-center gap-3 mx-0 sm:ml-5 flex-wrap">
                     <div className="w-1.5 h-1.5 rounded-full mt-1 sm:mt-0" style={{ backgroundColor: isDark ? "#9ca3af" : "#9ca3af" }}></div>
                     <p className={`text-lg font-medium break-words ${isDark ? "text-gray-200" : "text-gray-700"}`}>
-                      <span className={`text-sm font-normal mr-2 ${isDark ? "text-gray-400" : "text-gray-500"}`}>{t("Company")}:</span>
+                      <span className={`text-sm font-normal mx-2 ${isDark ? "text-gray-400" : "text-gray-500"}`}>{t("Company")}:</span>
                       {vol.company}
                     </p>
                   </div>
@@ -449,7 +449,7 @@ const Volunteers = () => {
                     <div className="w-1.5 h-1.5 rounded-full mt-1 sm:mt-0" style={{ backgroundColor: isDark ? "#9ca3af" : "#9ca3af" }}></div>
                     <div className="flex flex-wrap items-start sm:items-center gap-4">
                       <p className={`${isDark ? "text-gray-300" : "text-gray-600"}`}>
-                        <span className={`text-sm mr-2 ${isDark ? "text-gray-400" : "text-gray-500"}`}>{t("From")}:</span>
+                        <span className={`text-sm mx-2 ${isDark ? "text-gray-400" : "text-gray-500"}`}>{t("From")}:</span>
                         <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-200">
                           {vol.from_month}, {vol.from_year}
                         </span>
@@ -457,7 +457,7 @@ const Volunteers = () => {
                       <span className="text-gray-400 hidden sm:inline">{lang === "en" ? <ArrowRight size={20} /> : <ArrowLeft size={20} />}</span>
 
                       <p className={`${isDark ? "text-gray-300" : "text-gray-600"}`}>
-                        <span className={`text-sm mr-2 ${isDark ? "text-gray-400" : "text-gray-500"}`}>{t("To")}:</span>
+                        <span className={`text-sm mx-2 ${isDark ? "text-gray-400" : "text-gray-500"}`}>{t("To")}:</span>
                         <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
                           {vol.to_year === "Present" || vol.to_month === "Present" ? t("present") : `${vol.to_month}, ${vol.to_year}`}
                         </span>
@@ -471,13 +471,13 @@ const Volunteers = () => {
                                 }`}
                             >
                               <span
-                                className={`text-sm mr-2 ${isDark ? "text-gray-400" : "text-gray-500"
+                                className={`text-sm mx-2 ${isDark ? "text-gray-400" : "text-gray-500"
                                   }`}
                               >
                                 {t("Location")}:
                               </span>
                               <span className="inline-flex items-center px-2.5 mx-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200">
-                                📍 {vol.country.en_name}, {vol.city.en_name}
+                                📍 {lang === 'en' ? vol.city.en_name : vol.city.ar_name}, {lang === 'en' ? vol.country.en_name : vol.country.ar_name}
                               </span>
                             </p>
                           </div>

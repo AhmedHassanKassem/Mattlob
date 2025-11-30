@@ -28,7 +28,7 @@ axiosInst.interceptors.response.use(
     const status = error?.response?.status;
     const currentPath = window.location.pathname;
 
-    if (status === 401 && !alreadyRedirected && !['/login', '/register' , '/verify' , '/forgotPassword' , '/resetPassword' , '/home' ].includes(currentPath)) {
+    if (status === 401 && !alreadyRedirected && !['/login', '/register' , '/verify' , '/forgotPassword' , '/resetPassword' ].includes(currentPath)) {
       alreadyRedirected = true;
       removeCookie('token');
       window.location.href = '/login';

@@ -3,17 +3,17 @@ import { useNavigate } from "react-router-dom"
 import Button from "../../../Containers/Button"
 import Input from "../../../Containers/Input"
 import SideBar from "../../../Containers/SideBar"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import Templates, {  sampleResume } from "../ChooseTemplate/Templates"
 import { ICVData, IResume } from "../../../Interfaces/interface"
-import { ChevronLeft, ChevronRight, DownloadCloudIcon, Eye, LogOut, Trash2, X } from "lucide-react"
+import { ChevronLeft, ChevronRight, Eye, LogOut, Trash2, X } from "lucide-react"
 import { axiosInst } from "../../../axios/axios"
 import { useDispatch, useSelector } from "react-redux"
 import { AppDispatch, RootState } from "../../../Redux/store"
 import { clearFoundUser } from "../../../Redux/Slices/userSlice"
 import { t } from "i18next"
-import TemplatePDF from "../ChooseTemplate/TemplatePDF"
-const Finish = () => {
+import { removeCookie } from "../../../Utils/cookies"
+const Links = () => {
   const navigate = useNavigate()
   const dispatch: AppDispatch = useDispatch()
   const resumeColor = useSelector((state: RootState) => state.resumeColor.resumeColor)
@@ -26,7 +26,6 @@ const isDark = useSelector((state : RootState)=> state.isDark.isDark)
 const [links, setLinks] = useState<string[]>([]);
   const [showPreview, setShowPreview] = useState(false)
   const token = useSelector((state: RootState) => state.token.token)
-  const resumeRef = useRef<HTMLDivElement>(null);
   const [isPaid, setIsPaid] = useState(true);
   const [tempId, setTempId] = useState(0);
   const handleAddLink = (updated: string[]) => {
@@ -83,15 +82,9 @@ const [links, setLinks] = useState<string[]>([]);
           'Authorization': `Bearer ${token}`
         }
       })
-      
-    //  downloadPDF()
-    window.print()
-      // localStorage.removeItem('resumeData')
-      // localStorage.removeItem('tempId')
-      // localStorage.removeItem('color')
-    }
+      navigate('/build-resume/pdf-download')
   }
-
+  }
 useEffect(() => {
   const resume = JSON.parse(localStorage.getItem('resumeData') || "null") ?? sampleResume.resume;
   const myTempId = JSON.parse(localStorage.getItem('tempId')!);
@@ -117,9 +110,7 @@ useEffect(() => {
     handleAddLink(updated);
   };
   const handleLogout = () => {
-    localStorage.removeItem('email')
-    localStorage.removeItem('user')
-    localStorage.removeItem('token')
+    removeCookie('token')
     dispatch(clearFoundUser());
     navigate('/login')
   }
@@ -221,10 +212,6 @@ useEffect(() => {
           </div>
         </div>
 
-        {/* Hidden Preview */}
-
-
-        {/* Preview Modal */}
         {showPreview && (
           <div
             onClick={() => setShowPreview(!showPreview)}
@@ -254,55 +241,51 @@ useEffect(() => {
             </div>
           </div>
         )}
-
-        {/* Footer Buttons */}
         <div
           className={`col-span-12 fixed bottom-0 right-0 p-2 w-full border shadow-md transition-all no-print ${isDark
               ? "bg-gray-800 border-gray-700 shadow-sky-900/30"
               : "bg-white border-gray-200 shadow-sky-300"}`}
         >
           <div className="flex justify-center lg:justify-end">
-            <div className="flex lg:gap-5 gap-15 text-lg font-bold">
+            <div className="flex lg:gap-5 gap-10 text-lg font-bold">
               <Button
-                className={`rounded-full p-2 transition-all duration-300 border shadow-sm hover:shadow-md ${isDark
+                className={`rounded-md p-2 transition-all duration-300 border shadow-sm hover:shadow-md hover:bg-sky-100 ${isDark
                     ? "text-white border-white shadow-white"
                     : "text-sky-600 border-sky-200 hover:shadow-md shadow-sky-300"}`}
                 onClick={() => navigate(-1)}
                 btnTitle="Go Previous"
-                buttonContent={lang === "en" ? <ChevronLeft /> : <ChevronRight />} />
+                buttonContent={<div className="text-sm flex items-center justify-center w-20">    
+                {lang === "en" ? <ChevronLeft size={17} /> : <ChevronRight size={17} />}
+                <p className="text-sm">{t("Previous")}</p>
+                </div>} />
 
               <Button
                 onClick={() => setShowPreview(true)}
                 btnTitle="Show Preview"
-                className={`rounded-full p-2 transition-all duration-300 border shadow-sm hover:shadow-md ${isDark
+                className={`rounded-md p-2 transition-all duration-300 border shadow-sm hover:shadow-md hover:bg-sky-100 ${isDark
                     ? "text-white border-white shadow-white"
                     : "text-sky-600 border-sky-200 hover:shadow-md shadow-sky-300"}`}
-                buttonContent={<Eye />} />
-
+                buttonContent={<div className="flex items-center w-32 justify-center gap-1"><Eye /> <p className="text-sm">{t("Preview")}</p></div>} />
+               
               <Button
-                btnTitle="Download CV"
                 onClick={checkForPurchase}
-                className={`text-sm rounded-full p-2 transition-all duration-300 border shadow-sm hover:shadow-md ${isDark
-                    ? "text-white border-white shadow-white"
-                    : "text-sky-600 border-sky-200 hover:shadow-md shadow-sky-300"}`}
-                buttonContent={<DownloadCloudIcon />} />
+                btnTitle="Go Next"
+                className={`rounded-md p-2 transition-all border duration-300 shadow-sm hover:shadow-md hover:bg-sky-100 ${isDark
+                  ? "text-white border-white shadow-white"
+                  : "text-sky-600 border-sky-200 shadow-sky-300"
+                  }`}
+                buttonContent={<div className="text-sm flex items-center justify-center w-20">
+                <p className="text-sm">{t("Next")}</p>
+                {lang === "en" ? <ChevronRight size={17} /> : <ChevronLeft size={17} />}
+                </div>}
+              />
             </div>
           </div>
         </div>
-
       </div>
-
     </div>
-    <div className="cv-print-area hidden print:block">
-  <TemplatePDF
-    ref={resumeRef}
-    selectedTempId={tempId}
-    disableScale={true}
-    resume={resumeData}
-    color={resumeColor} />
-</div>
 </>
   );
 }
 
-export default Finish
+export default Links

@@ -17,6 +17,7 @@ import { t } from "i18next"
 import RadioButton from "../../../Containers/Radiobutton"
 import Volunteers from "../Volunteers/Volunteers"
 import { BounceLoader } from "react-spinners"
+import { removeCookie } from "../../../Utils/cookies"
 
 const History = () => {
   const navigate = useNavigate();
@@ -402,9 +403,7 @@ const handleChangeVillage = (field: keyof IExperience, value: number) => {
 
 
   const handleLogout = () => {
-    localStorage.removeItem('email')
-    localStorage.removeItem('user')
-    localStorage.removeItem('token')
+    removeCookie('token')
     dispatch(clearFoundUser());
     navigate('/login')
   }
@@ -908,10 +907,15 @@ const handleTitleChange = (field: keyof IExperience, value: any) => {
                         </div>
 
                         <div className="flex items-start sm:items-center gap-3 ml-0 sm:ml-5 flex-wrap">
-                          <div className="w-1.5 h-1.5 rounded-full mt-1 sm:mt-0" style={{ backgroundColor: isDark ? "#9ca3af" : "#9ca3af" }}></div>
+                          <div className="w-1.5 h-1.5 rounded-full mt-1 sm:mt-0" 
+                          style={{ backgroundColor: isDark ? "#9ca3af" : "#9ca3af" }}></div>
                           <p className={`text-lg font-medium break-words ${isDark ? "text-gray-200" : "text-gray-700"}`}>
                             <span className={`text-sm font-normal mr-2 ${isDark ? "text-gray-400" : "text-gray-500"}`}>{t("Location")}:</span>
-                            {exp.remote ? t("Remote") : `${exp.country?.en_name}, ${exp.city?.en_name + ","} ${exp.province?.en_name}  ${exp.village && "," + exp.village?.en_name} ${exp.address_info && "," + exp.address_info}`}
+                            {exp.remote ? t("Remote") : `${lang === 'en' ? exp.country?.en_name : exp.country?.ar_name }, 
+                            ${lang === 'en' ? exp.city?.en_name : exp.city.ar_name}, 
+                            ${lang === 'en' ? exp.province?.en_name : exp.province.ar_name},
+                            ${exp.village && "," + lang === 'en' ?  exp.village?.en_name : exp.village?.ar_name} 
+                            ${exp.address_info && "," + exp.address_info}`}
                           </p>
                         </div>
                         <div className="flex items-start sm:items-center gap-3 mx-0 sm:ml-5 flex-wrap">
@@ -1010,24 +1014,30 @@ const handleTitleChange = (field: keyof IExperience, value: any) => {
 
         <div className={`col-span-12 fixed bottom-0 right-0 p-2 w-full shadow-md transition-colors duration-300 ${isDark ? "bg-gray-800 border-t border-gray-700 text-white" : "bg-white border border-gray-200 text-black"}`}>
           <div className="flex justify-center lg:justify-end">
-            <div className="flex lg:gap-5 gap-15 text-lg font-bold">
+            <div className="flex lg:gap-5 gap-10 text-lg font-bold">
               <Button
-                className={`rounded-full p-2 transition-all duration-300 border shadow-sm hover:shadow-md ${isDark ? "text-white border-white shadow-white" : "border-sky-200 text-sky-600"}`}
+                className={`rounded-md p-2 transition-all duration-300 border shadow-sm hover:shadow-md hover:bg-sky-100 ${isDark ? "text-white border-white shadow-white" : "border-sky-200 text-sky-600"}`}
                 onClick={() => navigate(-1)}
                 btnTitle="Go Previous"
-                buttonContent={lang === "en" ? <ChevronLeft /> : <ChevronRight />}
+                buttonContent={<div className="text-sm flex items-center justify-center w-20">    
+                {lang === "en" ? <ChevronLeft size={17} /> : <ChevronRight size={17} />}
+                <p className="text-sm">{t("Previous")}</p>
+                </div>}
               />
               <Button
                 onClick={() => setShowPreview(true)}
                 btnTitle="Show Preview"
-                className={`rounded-full p-2 transition-all duration-300 border shadow-sm hover:shadow-md ${isDark ? "text-white border-white shadow-white" : "border-sky-200 text-sky-600"}`}
-                buttonContent={<Eye />}
+                className={`rounded-md p-2 transition-all duration-300 border shadow-sm hover:shadow-md hover:bg-sky-100 ${isDark ? "text-white border-white shadow-white" : "border-sky-200 text-sky-600"}`}
+                buttonContent={<div className="flex items-center w-32 justify-center gap-1"><Eye /> <p className="text-sm">{t("Preview")}</p></div>}
               />
               <Button
                 onClick={handleNext}
                 btnTitle="Go Next"
-                buttonContent={lang === "en" ? <ChevronRight /> : <ChevronLeft />}
-                className={`rounded-full p-2 transition-all duration-300 border shadow-sm hover:shadow-md ${isDark ? "text-white border-white shadow-white" : "border-sky-200 text-sky-600"}`}
+                buttonContent={<div className="text-sm flex items-center justify-center w-20">
+                <p className="text-sm">{t("Next")}</p>
+                {lang === "en" ? <ChevronRight size={17} /> : <ChevronLeft size={17} />}
+                </div>}
+                className={`rounded-md p-2 transition-all duration-300 border shadow-sm hover:shadow-md hover:bg-sky-100 ${isDark ? "text-white border-white shadow-white" : "border-sky-200 text-sky-600"}`}
               />
             </div>
           </div>

@@ -13,6 +13,7 @@ import totalPages from './Slices/totalPages';
 import { getEngagedRolesReducer } from './RecruiterRedux/EngagedJobs/getEngagedJobsReducer';
 import isDarkSlice from './Slices/isDarkSlice';
 import langSlice from './Slices/langSlice';
+import resumeLangSlice from './Slices/resumeLang';
 
 const rootReducer = combineReducers({
    token : tokenSlice,
@@ -26,6 +27,7 @@ const rootReducer = combineReducers({
    resumeColor : resumeColorSlice,
    temps : tempsSlice,
    lang : langSlice,
+   resumeLang : resumeLangSlice,
    isDark : isDarkSlice,
    tempImg : tempSliceImage
 })

@@ -6,7 +6,7 @@ import Fill from './Components/Build/FillForm/Fill.tsx';
 import History from './Components/Build/WorkHistory/History.tsx';
 import Skills from './Components/Build/Skills/Skills.tsx';
 import Education from './Components/Build/Education/Education.tsx';
-import Finish from './Components/Build/Finish/Finish.tsx';
+import Links from './Components/Build/Links/Links.tsx';
 import Start from './Components/Start/Start.tsx';
 import '@fontsource/ubuntu-mono/700.css'; // Bold weight
 import { toast, ToastContainer } from 'react-toastify';
@@ -18,7 +18,7 @@ import { setTokenValue } from './Redux/Slices/tokenSlice.ts';
 import {jwtDecode} from 'jwt-decode'; // ✅ Default import
 
 import { axiosInst } from './axios/axios.ts';
-import Home from './Components/Home/Home.tsx';
+// import Home from './Components/Home/Home.tsx';
 import Navbar from './Components/Navbar/Nav.tsx';
 import Forget from './Components/ForgetPassword/Forget.tsx';
 import SuccessMessage from './Containers/SuccessMessage.tsx';
@@ -46,6 +46,9 @@ import Templates from './Components/Build/ChooseTemplate/Templates.tsx';
 import Candidate from './Components/Recruiter/Candidate/Candidate.tsx';
 import AllCandidates from './Components/Recruiter/Candidate/AllCandidates.tsx';
 import Plans from './Components/Plans/Plans.tsx';
+import TemplatePDF from './Components/Build/ChooseTemplate/TemplatePDF.tsx';
+import PublicRoute from './Containers/PublicRoute.tsx';
+import { BounceLoader } from 'react-spinners';
 
 
 const App = () => {
@@ -55,6 +58,7 @@ const dispatch : AppDispatch = useDispatch()
  const path = window.location.pathname
 const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const urlParams = new URLSearchParams(window.location.search);
+const [loading, setLoading] = useState(true);
 
 useEffect(() => {
     const token = getCookie('token');
@@ -147,14 +151,14 @@ const getAuthLinkedinData = async (code : string) => {
       dispatch(setTokenValue($tok));
       const decoded: any = jwtDecode($tok);
       toast.success("Logged in successfully");
-      localStorage.setItem('token', $tok);
+      setCookie('token', $tok , 1);
          const user: IUser = {
         email: decoded[EMAIL_CLAIM],
         name: decoded[NAME_CLAIM],
         user_id: decoded.user_id,
       };   
       dispatch(setFoundUser(user));
-      navigate('/home');
+      navigate('/');
     } else {
       toast.error('Invalid LinkedIn credentials');
     }
@@ -172,6 +176,8 @@ const getAuthLinkedinData = async (code : string) => {
   });
     if(res){
       const $tok = res.data.token
+      console.log(res.data);
+      
        if ($tok) {     
       dispatch(setTokenValue($tok));
       const decoded: any = jwtDecode($tok);
@@ -185,7 +191,7 @@ const getAuthLinkedinData = async (code : string) => {
       };
       
       dispatch(setFoundUser(user))
-      navigate('/home')
+      navigate('/')
       }
     }else{
       toast.error('Invalid linkedIn credentilas')
@@ -216,40 +222,48 @@ useEffect(() => {
 
 
   
+
 useEffect(() => {
   const supportedLangs = ["en", "ar"];
   const url = new URL(window.location.href);
   let lang = url.searchParams.get("lang");
+  let resumeLang = localStorage.getItem('resumeLang');
 
-  // لو مفيش لغة في الـ URL → استخدم اللي في localStorage
   if (!lang) {
     const storedLang = localStorage.getItem("lang");
     if (supportedLangs.includes(storedLang || "")) {
       lang = storedLang!;
     } else {
-      lang = "en"; // default
+      lang = "ar";
     }
 
-    // ضيفها للـ URL بدون Reload
     url.searchParams.set("lang", lang);
     window.history.replaceState({}, "", url.toString());
   }
-
-  // احفظ اللغة في localStorage
+   
   localStorage.setItem("lang", lang);
-
-  // ابعتها للـ Redux
   dispatch(setLangSlice(lang));
 
-  // حدّث i18n
   i18n.changeLanguage(lang);
-  document.documentElement.lang = lang;
-  document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+  if(path.includes('/build-resume')){
+    document.documentElement.lang = resumeLang!;
+  document.documentElement.dir = resumeLang === "ar" ? "rtl" : "ltr";
+  }else{
+    document.documentElement.lang = lang;
+  document.documentElement.dir = lang === "ar" ? "rtl" : "ltr"; 
+  }
+ 
 
-  // classes للـ body
   document.body.classList.remove("en", "ar");
-  document.body.classList.add(lang);
 
+if (path.includes("/build-resume")) {
+  document.body.classList.add(resumeLang!);
+} else {
+  document.body.classList.add(lang);
+}
+
+  // ★★★ اللودينج يطفي هنا فقط ★★★
+  setLoading(false);
 }, []);
 
 
@@ -258,7 +272,9 @@ useEffect(() => {
 
   return (
     <div>
-      <header className="App-header">
+      {loading ? <div className='flex justify-center items-center min-h-screen'> 
+        <BounceLoader size={40} color='#0084d1'/> </div> : 
+        <header className="App-header">
       <link
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
@@ -266,12 +282,23 @@ useEffect(() => {
             crossOrigin="anonymous"
             referrerPolicy="no-referrer"
           />
-          {path.includes('/dashboard')  || path.includes('/login') 
+          {path.includes('/dashboard')  || path.includes('/login') || path.includes('/build-resume') || path.includes("/")
           || path.includes('/register')? null : <Navbar/> }
       <main className='min-h-screen siteWidth' >    
             <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/home" element={<Home />} />
+            {/* <Route path="/home" element={<PublicRoute>
+      <Choose />
+    </PublicRoute>} /> */}
+    <Route 
+  path="/" 
+  element={<Navigate to="/build-resume/choose-temp" replace />} 
+/>
+    <Route 
+  path="/home" 
+  element={<Navigate to="/build-resume/choose-temp" replace />} 
+/>
+
+            {/* <Route path="/home" element={<Home />} /> */}
             <Route path="/start" element={<Start />} />
             <Route path="/pricing" element={<Plans />} />
             <Route path="/login" element={<Login />} />
@@ -280,33 +307,34 @@ useEffect(() => {
             <Route path="/verify" element={<VerifyEmail />} />
             <Route path="/resetPassword" element={<ResetPassword />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/build-resume/choose-temp" element={<Choose />} />
-            <Route path="/build-resume/select-resume" element={<SelectResume />} />
-            <Route path="/build-resume/work-history" element={<History />} /> 
-            <Route path="/build-resume/add-skills" element={<Skills />} /> 
-            <Route path="/build-resume/myresumes" element={<MyCvs />} /> 
-            <Route path="/build-resume/add-educ" element={<Education />} /> 
-            <Route path="/build-resume/add-skills" element={<Skills />} /> 
-            <Route path="/build-resume/finalize" element={<Finish />} /> 
-            <Route path="/build-resume/fill-data" element={<Fill />} />
-           <Route path="/build-resume/temps" element={<Templates/>} />
+            <Route path="/home" element={<PublicRoute><Choose /></PublicRoute>} />
+            <Route path="/build-resume/choose-temp" element={<PublicRoute><Choose /></PublicRoute>} />
+            <Route path="/build-resume/select-resume" element={<PublicRoute><SelectResume /></PublicRoute>} />
+            <Route path="/build-resume/work-history" element={<PublicRoute><History /></PublicRoute>} />  
+            <Route path="/build-resume/myresumes" element={<PublicRoute><MyCvs /></PublicRoute>} /> 
+            <Route path="/build-resume/add-educ" element={<PublicRoute><Education /></PublicRoute>} /> 
+            <Route path="/build-resume/add-skills" element={<PublicRoute><Skills /></PublicRoute>} /> 
+            <Route path="/build-resume/add-links" element={<PublicRoute><Links /></PublicRoute>} /> 
+            <Route path="/build-resume/fill-data" element={<PublicRoute><Fill /></PublicRoute>} />
+           <Route path="/build-resume/temps" element={<PublicRoute><Templates/></PublicRoute>} />
+           <Route path="/build-resume/pdf-download" element={<PublicRoute><TemplatePDF/></PublicRoute>} />
             ///////////////////// Dashboard Routes /////////////////////////
          <Route path="/dashboard" element={<Main isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />}>
          <Route index element={<Navigate to="searchRoles" replace />} />
     <Route path="jobs" element={<Job />} />
-    <Route path="add-candidate" element={<Candidate />} />
-    <Route path="all-candidates" element={<AllCandidates />} />
-    <Route path="managejobs" element={<PostJob />} />
-    <Route path="engagedRoles" element={<EngagedRoles />} />
-    <Route path="searchRoles" element={<SearchRoles />} />
-    <Route path="roleDetails" element={<RoleDetails />} />
+    <Route path="add-candidate" element={<PublicRoute><Candidate /></PublicRoute>} />
+    <Route path="all-candidates" element={<PublicRoute><AllCandidates /></PublicRoute>} />
+    <Route path="managejobs" element={<PublicRoute><PostJob /></PublicRoute>} />
+    <Route path="engagedRoles" element={<PublicRoute><EngagedRoles /></PublicRoute>} />
+    <Route path="searchRoles" element={<PublicRoute><SearchRoles /></PublicRoute>} />
+    <Route path="roleDetails" element={<PublicRoute><RoleDetails /></PublicRoute>} />
   </Route>
           </Routes>
     
 
         <ToastContainer/>
       </main>
-      </header>
+      </header>}
     </div>
   );
 };

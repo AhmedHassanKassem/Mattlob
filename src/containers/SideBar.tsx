@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FileText, User, GraduationCap, Award, Settings, Check } from 'lucide-react';
+import { FileText, User, GraduationCap, Award, Settings, Check, Download } from 'lucide-react';
 import { RootState } from '../Redux/store';
 import { useSelector } from 'react-redux';
 import { t } from 'i18next';
@@ -7,6 +7,7 @@ import { t } from 'i18next';
 interface Step {
   id: number;
   title: string;
+  link: string;
   icon: React.ReactNode;
   completed: boolean;
 }
@@ -22,7 +23,8 @@ const SideBar: React.FC<SidebarProps> = ({
   const [activeStep, setActiveStep] = useState(currentStep);
   const [percent, setPercent] = useState("20%");
   const isDark = useSelector((state: RootState) => state.isDark.isDark);
-  const lang = useSelector((state : RootState)=> state.lang.lang)
+  const lang = useSelector((state : RootState)=> state.resumeLang.resumeLang)
+
 useEffect(() => {
   const path = window.location.pathname;
 
@@ -31,7 +33,8 @@ useEffect(() => {
     '/build-resume/work-history': 2,
     '/build-resume/add-educ': 3,
     '/build-resume/add-skills': 4,
-    '/build-resume/finalize': 5,
+    '/build-resume/add-links': 5,
+    '/build-resume/pdf-download': 6,
   };
 
   const currentStep = stepMap[path] || 1;
@@ -41,7 +44,7 @@ useEffect(() => {
     '/build-resume/work-history': "45%",
     '/build-resume/add-educ': "65%",
     '/build-resume/add-skills': "80%",
-    '/build-resume/finalize': "95%",
+    '/build-resume/add-links': "95%",
 
   };
 
@@ -53,35 +56,47 @@ useEffect(() => {
   const steps: Step[] = [
     {
       id: 1,
-      title: t('heading'),
+      title: t('heading' , {lng : lang}),
+      link : '/build-resume/fill-data',
       icon: <User size={16} />,
       completed: activeStep > 1
     },
     {
       id: 2,
-      title: t('workHistory'),
+      title: t('workHistory' , {lng : lang}),
+      link : '/build-resume/work-history',
       icon: <FileText size={16} />,
       completed: activeStep > 2
     },
     {
       id: 3,
-      title: t('education'),
+      title: t('education' , {lng : lang}),
+      link : '/build-resume/add-educ',
       icon: <GraduationCap size={16} />,
       completed: activeStep > 3
     },
     {
       id: 4,
-      title: t('skills'),
+      title: t('skills' , {lng : lang}),
+      link : '/build-resume/add-skills',
       icon: <Award size={16} />,
       completed: activeStep > 4
     },
-
-    {
+  {
       id: 5,
-      title: t('finalize'),
+      title: t('links' , {lng : lang}),
+      link : '/build-resume/add-links',
+      icon: <Download size={16} />,
+      completed: activeStep > 6
+    },
+    {
+      id: 6,
+      title: t('finalize' , {lng : lang}),
+      link : '/build-resume/pdf-download',
       icon: <Settings size={16} />,
       completed: activeStep > 6
     }
+  
   ];
 
 
@@ -162,7 +177,8 @@ return (
               </div>
 
               {/* Title */}
-              <span
+              <div
+
                 className={`hidden lg:block text-sm truncate transition-all duration-200
                   ${
                     isActive
@@ -178,7 +194,7 @@ return (
                 `}
               >
                 {step.title}
-              </span>
+              </div>
             </div>
           );
         })}
@@ -192,7 +208,7 @@ return (
               isDark ? "text-gray-300" : "text-gray-700"
             }`}
           >
-            {t("resumeComplete")}:
+            {t("resumeComplete" , {lng : lang})}:
           </span>
           <span
             className={`md:hidden text-xs font-medium ${
@@ -225,8 +241,8 @@ return (
           isDark ? "border-gray-700" : "border-gray-100"
         }`}
       >
-        <div className="space-y-2">
-          {["Terms and Conditions", "Privacy Policy", "Accessibility", "Contact Us"].map((label, i) => (
+        <div className="space-y-4">
+          {["Terms and Conditions", "Privacy Policy","Contact Us"].map((label, i) => (
             <a
               key={i}
               href="#"
@@ -234,17 +250,17 @@ return (
                 isDark ? "text-sky-400 hover:text-sky-300" : "text-sky-600 hover:text-sky-800"
               }`}
             >
-              {label}
+              {t(label , {lng : lang})}
             </a>
           ))}
         </div>
         <div
-          className={`pt-4 border-t text-center ${
+          className={`mt-15 text-center ${
             isDark ? "border-gray-700" : "border-gray-100"
           }`}
         >
           <p className={`text-xs ${isDark ? "text-gray-500" : "text-gray-500"}`}>
-            {t("© 2025 CV Shop Limited. All rights reserved.")}
+            {t("© 2025 CV Shop Limited. All rights reserved." , {lng : lang})}
           </p>
         </div>
       </div>
